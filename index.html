@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-1.8.2.min.js"></script> 
+		<link rel="stylesheet" href="css/styles.css" media="all">
+		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-3.3.1.min.js"></script>
+		<script language="JavaScript" src="js/vvvv_js/lib/jquery-ui/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="js/vvvv_js/lib/jquery-ui/jquery-ui.min.css">
 		<script language="JavaScript" src="js/vvvv_js/vvvv.js"></script>
 		<script language="JavaScript"> 
 			$(document).ready(function() 
@@ -9,8 +12,37 @@
 				VVVV.init("js/vvvv_js/", 'full', function() 
 				{ 
 					console.log('VVVV.js initialized'); 
-				}); 
+				});
+
+				$("#hue_slider").slider({
+					min: 0,
+					max: 1,
+					step:0.01,
+					slide: function(event, ui) {
+						$("#hue").val(ui.value);
+				  	}
+				});
+
+				$("#saturation_slider").slider({
+					min: 0,
+					max: 1,
+					step:0.01,
+					slide: function(event, ui) {
+						$("#saturation").val(ui.value);
+
+				  	}
+				});
+
+				$("#value_slider").slider({
+					min: 0,
+					max: 1,
+					step:0.01,
+					slide: function(event, ui) {
+						$("#value").val(ui.value);
+				  	}
+				});
 			}); 
+
 		</script>
 		<script language="VVVV" src="assets/patches/first_test.v4p"></script>
 	</head>
@@ -19,6 +51,11 @@
 		<button id="front_button">Front</button>
 		<input type="text" id="text_input"/>
 		<div id="content">
+		</div>
+		<div id="sliders">
+			<div id="hue_slider"/><input type="hidden" id="hue"/></div>
+			<div id="saturation_slider"/><input type="hidden" id="saturation"/></div>
+			<div id="value_slider"/><input type="hidden" id="value"/></div>
 		</div>
 	</body>
 </html>

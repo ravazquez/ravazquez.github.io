@@ -1,6 +1,6 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta28.1.dtd" >
   <PATCH>
-  <BOUNDS type="Window" width="12930" height="7995">
+  <BOUNDS type="Window" width="12720" height="7995">
   </BOUNDS>
   <NODE id="5" nodename="Renderer (Canvas VVVVjs)" systemname="Renderer (Canvas VVVVjs)" componentmode="Hidden">
   <BOUNDS type="Node" left="1440" top="5790" width="100" height="100">
@@ -181,7 +181,7 @@
   </PIN>
   </NODE>
   <NODE id="45" nodename="IOBox (String)" systemname="IOBox (String)" componentmode="InABox">
-  <BOUNDS type="Box" left="5505" top="3540" width="0" height="0">
+  <BOUNDS type="Box" left="5805" top="3510" width="0" height="0">
   </BOUNDS>
   <PIN pinname="SliceOffset" visible="1">
   </PIN>
@@ -192,28 +192,12 @@
   <PIN pinname="Descriptive Name" visible="0" values="|#text_input|">
   </PIN>
   </NODE>
-  <NODE id="46" nodename="LFO (Animation)" systemname="LFO (Animation)" componentmode="Hidden">
-  <BOUNDS type="Node" left="6540" top="810" width="100" height="100">
-  </BOUNDS>
-  <PIN pinname="Period" visible="1">
-  </PIN>
-  <PIN pinname="Pause" visible="1">
-  </PIN>
-  <PIN pinname="Reverse" visible="1">
-  </PIN>
-  <PIN pinname="Reset" visible="1">
-  </PIN>
-  <PIN pinname="Phase" visible="1">
-  </PIN>
-  <PIN pinname="Descriptive Name" visible="0" values="||">
-  </PIN>
-  </NODE>
   <NODE id="47" nodename="HSV (Color Join)" systemname="HSV (Color Join)" componentmode="Hidden">
-  <BOUNDS type="Node" left="6450" top="1740" width="100" height="100">
+  <BOUNDS type="Node" left="6045" top="2610" width="100" height="100">
   </BOUNDS>
   <PIN pinname="Hue" visible="1">
   </PIN>
-  <PIN pinname="Saturation" visible="1" values="|1|">
+  <PIN pinname="Saturation" visible="1">
   </PIN>
   <PIN pinname="Value" visible="1">
   </PIN>
@@ -222,14 +206,34 @@
   <PIN pinname="Descriptive Name" visible="0" values="||">
   </PIN>
   </NODE>
-  <NODE id="48" nodename="IOBox (Color)" systemname="IOBox (Color)" componentmode="InABox">
-  <BOUNDS type="Box" left="7305" top="2595" width="0" height="0">
+  <NODE id="49" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
+  <BOUNDS type="Box" left="6315" top="525" width="0" height="0">
   </BOUNDS>
-  <PIN pinname="Color Input" visible="1">
+  <PIN pinname="Y Input Value" visible="1">
   </PIN>
   <PIN pinname="Rows" visible="0" values="|1|">
   </PIN>
-  <PIN pinname="Descriptive Name" visible="0" values="||">
+  <PIN pinname="Descriptive Name" visible="0" values="|#hue/attribute/value|">
+  </PIN>
+  </NODE>
+  <NODE id="50" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
+  <BOUNDS type="Box" left="9000" top="465" width="0" height="0">
+  </BOUNDS>
+  <PIN pinname="Y Input Value" visible="1">
+  </PIN>
+  <PIN pinname="Rows" visible="0" values="|1|">
+  </PIN>
+  <PIN pinname="Descriptive Name" visible="0" values="|#saturation/attribute/value|">
+  </PIN>
+  </NODE>
+  <NODE id="51" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
+  <BOUNDS type="Box" left="10845" top="630" width="0" height="0">
+  </BOUNDS>
+  <PIN pinname="Y Input Value" visible="1">
+  </PIN>
+  <PIN pinname="Rows" visible="0" values="|1|">
+  </PIN>
+  <PIN pinname="Descriptive Name" visible="0" values="|#value/attribute/value|">
   </PIN>
   </NODE>
   <LINK srcnodeid="9" srcpinname="Output String" dstnodeid="8" dstpinname="Filename">
@@ -262,10 +266,12 @@
   </LINK>
   <LINK srcnodeid="45" srcpinname="Output String" dstnodeid="32" dstpinname="Text">
   </LINK>
-  <LINK srcnodeid="46" srcpinname="Output" dstnodeid="47" dstpinname="Hue">
-  </LINK>
-  <LINK srcnodeid="47" srcpinname="Output" dstnodeid="48" dstpinname="Color Input">
-  </LINK>
   <LINK srcnodeid="47" srcpinname="Output" dstnodeid="24" dstpinname="Color">
+  </LINK>
+  <LINK srcnodeid="49" srcpinname="Y Output Value" dstnodeid="47" dstpinname="Hue">
+  </LINK>
+  <LINK srcnodeid="50" srcpinname="Y Output Value" dstnodeid="47" dstpinname="Saturation">
+  </LINK>
+  <LINK srcnodeid="51" srcpinname="Y Output Value" dstnodeid="47" dstpinname="Value">
   </LINK>
   </PATCH>
