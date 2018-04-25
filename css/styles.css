@@ -7,3 +7,6 @@
 #sliders{
 	text-align:center;
 }
+.form-control.hidden{
+	display:none;
+}

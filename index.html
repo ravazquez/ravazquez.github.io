@@ -46,6 +46,17 @@
 						$("#value").val(ui.value);
 				  	}
 				});
+
+				$('input:radio').change(function(e) {
+					if($(e.target).attr("name") != "back") {
+						$("#front_text_input").removeClass("hidden");
+						$("#back_text_input").addClass("hidden");
+					}
+					else {
+						$("#back_text_input").removeClass("hidden");
+						$("#front_text_input").addClass("hidden");	
+					}
+				});
 			}); 
 
 		</script>
@@ -65,7 +76,8 @@
 					</div>
 				</div>
 				<div class="col-sm-6">
-					<input type="text" id="text_input" class="form-control" placeholder="Text">
+					<input type="text" id="front_text_input" class="form-control" placeholder="Front Text">
+					<input type="text" id="back_text_input" class="form-control hidden" placeholder="Back Text">
 				</div>
 			</div>
 			<div class="row margin-top">
