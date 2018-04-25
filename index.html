@@ -5,6 +5,8 @@
 		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-3.3.1.min.js"></script>
 		<script language="JavaScript" src="js/vvvv_js/lib/jquery-ui/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="js/vvvv_js/lib/jquery-ui/jquery-ui.min.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 		<script language="JavaScript" src="js/vvvv_js/vvvv.js"></script>
 		<script language="JavaScript"> 
 			$(document).ready(function() 
@@ -50,15 +52,34 @@
 		<link rel="VVVV" href="assets/patches/first_test.v4p">
 	</head>
 	<body>
-		<button id="back_button">Back</button>
-		<button id="front_button">Front</button>
-		<input type="text" id="text_input"/>
-		<div id="content">
-		</div>
-		<div id="sliders">
-			<div id="hue_slider"/><input type="hidden" id="hue" value="0.5"/></div>
-			<div id="saturation_slider"/><input type="hidden" id="saturation" value="0.5"/></div>
-			<div id="value_slider"/><input type="hidden" id="value" value="0.5"/></div>
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-sm-2 justify-content-center">
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary">
+							<input type="radio" name="back" id="back_button" autocomplete="off" value="0"> Back
+						</label>
+						<label class="btn btn-secondary active">
+							<input type="radio" name="front" id="front_button" autocomplete="off" value="1"> Front
+						</label>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<input type="text" id="text_input" class="form-control" placeholder="Text">
+				</div>
+			</div>
+			<div class="row margin-top">
+				<div id="content" class="offset-sm-2 col-sm-6">
+				</div>
+				<div id="sliders" class="col-sm-2">
+					<div id="hue_slider"/><input type="hidden" id="hue" value="0.5"/></div>
+					<label for="hue_slider">H</label>
+					<div id="saturation_slider"/><input type="hidden" id="saturation" value="0.5"/></div>
+					<label for="saturation_slider">S</label>
+					<div id="value_slider"/><input type="hidden" id="value" value="0.5"/></div>
+					<label for="value_slider">V</label>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

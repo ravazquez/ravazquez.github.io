@@ -1,6 +1,9 @@
-input[type='range']{
-	
+.ui-slider{
+	margin-top:2.5em;
+}
+.margin-top{
+	margin-top:2em;
 }
 #sliders{
-	
+	text-align:center;
 }
