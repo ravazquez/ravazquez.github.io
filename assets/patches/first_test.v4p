@@ -1,6 +1,6 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta28.1.dtd" >
   <PATCH>
-  <BOUNDS type="Window" width="12315" height="7995">
+  <BOUNDS type="Window" width="12120" height="7995">
   </BOUNDS>
   <NODE id="5" nodename="Renderer (Canvas VVVVjs)" systemname="Renderer (Canvas VVVVjs)" componentmode="Hidden">
   <BOUNDS type="Node" left="5235" top="5940" width="100" height="100">
@@ -131,7 +131,7 @@
   </PIN>
   </NODE>
   <NODE id="32" nodename="Text (Canvas VVVVjs)" systemname="Text (Canvas VVVVjs)" componentmode="Hidden">
-  <BOUNDS type="Node" left="6480" top="5070" width="100" height="100">
+  <BOUNDS type="Node" left="6540" top="5325" width="100" height="100">
   </BOUNDS>
   <PIN pinname="Render State" visible="1">
   </PIN>
@@ -242,6 +242,20 @@
   <PIN pinname="Descriptive Name" visible="0" values="|#back_text_input|">
   </PIN>
   </NODE>
+  <NODE id="55" nodename="Translate (Transform)" systemname="Translate (Transform)" componentmode="Hidden">
+  <BOUNDS type="Node" left="6495" top="4815" width="100" height="100">
+  </BOUNDS>
+  <PIN pinname="Transform In" visible="1">
+  </PIN>
+  <PIN pinname="X" visible="1">
+  </PIN>
+  <PIN pinname="Y" visible="1" values="|0.37000000000000016|">
+  </PIN>
+  <PIN pinname="Z" visible="1">
+  </PIN>
+  <PIN pinname="Descriptive Name" visible="0" values="||">
+  </PIN>
+  </NODE>
   <LINK srcnodeid="9" srcpinname="Output String" dstnodeid="8" dstpinname="Filename">
   </LINK>
   <LINK srcnodeid="10" srcpinname="Output String" dstnodeid="13" dstpinname="Filename">
@@ -281,5 +295,7 @@
   <LINK srcnodeid="52" srcpinname="Y Output Value" dstnodeid="53" dstpinname="Switch">
   </LINK>
   <LINK srcnodeid="53" srcpinname="Output" dstnodeid="32" dstpinname="Text">
+  </LINK>
+  <LINK srcnodeid="55" srcpinname="Transform Out" dstnodeid="32" dstpinname="Transform">
   </LINK>
   </PATCH>
