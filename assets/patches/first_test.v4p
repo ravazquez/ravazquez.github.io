@@ -1,6 +1,6 @@
 <!DOCTYPE PATCH  SYSTEM "http://vvvv.org/versions/vvvv45beta28.1.dtd" >
   <PATCH>
-  <BOUNDS type="Window" width="12720" height="7995">
+  <BOUNDS type="Window" width="12510" height="7995">
   </BOUNDS>
   <NODE id="5" nodename="Renderer (Canvas VVVVjs)" systemname="Renderer (Canvas VVVVjs)" componentmode="Hidden">
   <BOUNDS type="Node" left="1440" top="5790" width="100" height="100">
@@ -181,7 +181,7 @@
   </PIN>
   </NODE>
   <NODE id="45" nodename="IOBox (String)" systemname="IOBox (String)" componentmode="InABox">
-  <BOUNDS type="Box" left="5805" top="3510" width="0" height="0">
+  <BOUNDS type="Box" left="5625" top="3720" width="0" height="0">
   </BOUNDS>
   <PIN pinname="SliceOffset" visible="1">
   </PIN>
@@ -201,13 +201,13 @@
   </PIN>
   <PIN pinname="Value" visible="1">
   </PIN>
-  <PIN pinname="Alpha" visible="1">
+  <PIN pinname="Alpha" visible="1" values="|1.3100000000000003|">
   </PIN>
   <PIN pinname="Descriptive Name" visible="0" values="||">
   </PIN>
   </NODE>
   <NODE id="49" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
-  <BOUNDS type="Box" left="6315" top="525" width="0" height="0">
+  <BOUNDS type="Box" left="6075" top="495" width="0" height="0">
   </BOUNDS>
   <PIN pinname="Y Input Value" visible="1">
   </PIN>
@@ -217,7 +217,7 @@
   </PIN>
   </NODE>
   <NODE id="50" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
-  <BOUNDS type="Box" left="9000" top="465" width="0" height="0">
+  <BOUNDS type="Box" left="6255" top="1140" width="0" height="0">
   </BOUNDS>
   <PIN pinname="Y Input Value" visible="1">
   </PIN>
@@ -227,7 +227,7 @@
   </PIN>
   </NODE>
   <NODE id="51" nodename="IOBox (Value Advanced)" systemname="IOBox (Value Advanced)" componentmode="InABox">
-  <BOUNDS type="Box" left="10845" top="630" width="0" height="0">
+  <BOUNDS type="Box" left="6465" top="1830" width="0" height="0">
   </BOUNDS>
   <PIN pinname="Y Input Value" visible="1">
   </PIN>
