@@ -3,7 +3,15 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-(function($) {
+if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
+
+define(function(require,exports) {
+
+
+var glMatrix = require('glMatrix');
+var Node = require('core/vvvv.core.node');
+var VVVV = require('core/vvvv.core.defines');
+var $ = require('jquery');
 
 VVVV.Types.CanvasTexture = { imageObject: undefined, loaded: false };
 
@@ -56,8 +64,9 @@ VVVV.Types.CanvasRenderState = function() {
     ctx.shadowOffsetX = this.shadowOffsetX;
     ctx.shadowOffsetY = this.shadowOffsetY;
     ctx.shadowBlur = this.shadowBlur;
-    ctx.shadowColor = 'rgba('+parseInt(this.shadowColor.rgba[0]*255)+','+parseInt(this.shadowColor[1]*255)+','+parseInt(this.shadowColor[2]*255)+','+this.shadowColor[3]+')';
+    ctx.shadowColor = 'rgba('+parseInt(this.shadowColor.rgba[0]*255)+','+parseInt(this.shadowColor.rgba[1]*255)+','+parseInt(this.shadowColor.rgba[2]*255)+','+this.shadowColor.rgba[3]+')';
     ctx.globalCompositeOperation = this.blendMode;
+
   }
 }
 
@@ -100,6 +109,8 @@ VVVV.Nodes.FillCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var renderStateIn = this.addInputPin("Render State In", [], VVVV.PinTypes.CanvasRenderState);
   var colorIn = this.addInputPin("Color", [new VVVV.Types.Color('1.0, 1.0, 1.0, 1.0')], VVVV.PinTypes.Color);
 
@@ -122,7 +133,7 @@ VVVV.Nodes.FillCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.FillCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.FillCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,6 +151,8 @@ VVVV.Nodes.StrokeCanvas = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
+
+  this.environments = ['browser'];
 
   var renderStateIn = this.addInputPin("Render State In", [], VVVV.PinTypes.CanvasRenderState);
   var colorIn = this.addInputPin("Color", [new VVVV.Types.Color('1.0, 1.0, 1.0, 1.0')], VVVV.PinTypes.Color);
@@ -172,7 +185,7 @@ VVVV.Nodes.StrokeCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.StrokeCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.StrokeCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,6 +203,8 @@ VVVV.Nodes.ShadowCanvas = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
+
+  this.environments = ['browser'];
 
   var renderStateIn = this.addInputPin("Render State In", [], VVVV.PinTypes.CanvasRenderState);
   var colorIn = this.addInputPin("Color", [new VVVV.Types.Color('0.0, 0.0, 0.0, 1.0')], VVVV.PinTypes.Color);
@@ -219,7 +234,7 @@ VVVV.Nodes.ShadowCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.ShadowCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.ShadowCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,6 +252,8 @@ VVVV.Nodes.BlendCanvas = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
+
+  this.environments = ['browser'];
 
   var renderStateIn = this.addInputPin("Render State In", [], VVVV.PinTypes.CanvasRenderState);
   var modeIn = this.addInputPin("Mode", ['source-over'], VVVV.PinTypes.Enum);
@@ -261,7 +278,7 @@ VVVV.Nodes.BlendCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.BlendCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.BlendCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -279,6 +296,8 @@ VVVV.Nodes.LinearGradientCanvas = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
+
+  this.environments = ['browser'];
 
   var renderStateIn = this.addInputPin("Render State In", [], VVVV.PinTypes.CanvasRenderState);
   var startXIn = this.addInputPin("Start X", [0.0], VVVV.PinTypes.Value);
@@ -321,7 +340,7 @@ VVVV.Nodes.LinearGradientCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.LinearGradientCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.LinearGradientCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -340,6 +359,8 @@ VVVV.Nodes.ArcCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var renderStateIn = this.addInputPin('Render State', [], VVVV.PinTypes.CanvasRenderState);
   var transformIn = this.addInputPin('Transform', [], VVVV.PinTypes.Transform);
   var clippingLayerIn = this.addInputPin('Clipping Layer', [], VVVV.PinTypes.CanvasLayer);
@@ -353,8 +374,8 @@ VVVV.Nodes.ArcCanvas = function(id, graph) {
   var layers = [];
 
   var Arc = function() {
-    this.transform = mat4.create();
-    mat4.identity(this.transform);
+    this.transform = glMatrix.mat4.create();
+    glMatrix.mat4.identity(this.transform);
     this.startAngle = 0;
     this.endAngle = 0.5;
     this.strokeColor = [1.0, 1.0, 1.0, 1.0];
@@ -372,16 +393,18 @@ VVVV.Nodes.ArcCanvas = function(id, graph) {
       ctx.restoreView();
       if (this.transform)
         ctx.transform(this.transform[0], this.transform[1], this.transform[4], this.transform[5], this.transform[12], this.transform[13]);
+      ctx.scale(0.01, 0.01); // to fix warped arcs in Chrome (because of drawing in small values); radius and lineWidth are multiplied by 10 below to compensate
       ctx.beginPath();
       if (!invisible)
         this.renderState.apply(ctx);
       else
         invisibleRenderState.apply(ctx);
+      ctx.lineWidth = ctx.lineWidth * 100;
       if (this.drawSegment) {
         ctx.moveTo(0, 0);
         ctx.lineTo(Math.cos(this.startAngle) * this.radius, Math.sin(this.startAngle) * this.radius);
       }
-      ctx.arc(0, 0, this.radius, this.startAngle, this.endAngle, false);
+      ctx.arc(0, 0, this.radius*100.0, this.startAngle, this.endAngle, false);
       if (this.drawSegment) {
         ctx.moveTo(Math.cos(this.endAngle) * this.radius, Math.sin(this.endAngle) * this.radius);
         ctx.lineTo(0, 0);
@@ -426,7 +449,7 @@ VVVV.Nodes.ArcCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.ArcCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.ArcCanvas.prototype = new Node();
 
 
 /*
@@ -446,6 +469,8 @@ VVVV.Nodes.RectangleCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var renderStateIn = this.addInputPin('Render State', [], VVVV.PinTypes.CanvasRenderState);
   var transformIn = this.addInputPin('Transform', [], VVVV.PinTypes.Transform);
   var clippingLayerIn = this.addInputPin('Clipping Layer', [], VVVV.PinTypes.CanvasLayer);
@@ -458,8 +483,8 @@ VVVV.Nodes.RectangleCanvas = function(id, graph) {
   var layers = [];
 
   var Rectangle = function() {
-    this.transform = mat4.create();
-    mat4.identity(this.transform);
+    this.transform = glMatrix.mat4.create();
+    glMatrix.mat4.identity(this.transform);
     this.renderState = defaultRenderState;
     this.clippingLayer = defaultCanvasLayer;
 
@@ -473,28 +498,30 @@ VVVV.Nodes.RectangleCanvas = function(id, graph) {
       ctx.restoreView();
       if (this.transform)
         ctx.transform(this.transform[0], this.transform[1], this.transform[4], this.transform[5], this.transform[12], this.transform[13]);
+      ctx.scale(0.01, 0.01); // to fix warped arcs in Chrome (because of drawing in small values); radius and lineWidth are multiplied by 100 below to compensate
       ctx.beginPath();
       if (!invisible)
         this.renderState.apply(ctx);
       else
         invisibleRenderState.apply(ctx);
-      var outer_right = this.width / 2;
-      var inner_right = outer_right - this.cornerRadius;
-      var outer_top = this.height / 2;
-      var inner_top = outer_top - this.cornerRadius;
+      ctx.lineWidth = ctx.lineWidth * 100;
+      var outer_right = this.width * 100 / 2;
+      var inner_right = outer_right - this.cornerRadius * 100;
+      var outer_top = this.height * 100 / 2;
+      var inner_top = outer_top - this.cornerRadius * 100;
       var outer_left = -outer_right;
       var inner_left = -inner_right;
       var outer_bottom = -outer_top;
       var inner_bottom = -inner_top;
       ctx.moveTo(inner_left, outer_bottom);
       ctx.lineTo(inner_right, outer_bottom);
-      ctx.arc(inner_right, inner_bottom, this.cornerRadius, 1.5 * Math.PI, 0, false);
+      ctx.arc(inner_right, inner_bottom, this.cornerRadius * 100, 1.5 * Math.PI, 0, false);
       ctx.lineTo(outer_right, inner_top);
-      ctx.arc(inner_right, inner_top, this.cornerRadius, 0, 0.5 * Math.PI, false);
+      ctx.arc(inner_right, inner_top, this.cornerRadius * 100, 0, 0.5 * Math.PI, false);
       ctx.lineTo(inner_left, outer_top);
-      ctx.arc(inner_left, inner_top, this.cornerRadius, 0.5 * Math.PI, Math.PI, false);
+      ctx.arc(inner_left, inner_top, this.cornerRadius * 100, 0.5 * Math.PI, Math.PI, false);
       ctx.lineTo(outer_left, inner_bottom);
-      ctx.arc(inner_left, inner_bottom, this.cornerRadius, Math.PI, 1.5 * Math.PI, false);
+      ctx.arc(inner_left, inner_bottom, this.cornerRadius * 100, Math.PI, 1.5 * Math.PI, false);
       ctx.closePath();
       if (this.renderState.fillColor.rgba[3]>0)
         ctx.fill();
@@ -531,7 +558,7 @@ VVVV.Nodes.RectangleCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.RectangleCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.RectangleCanvas.prototype = new Node();
 
 
 /*
@@ -551,6 +578,8 @@ VVVV.Nodes.TextCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var renderStateIn = this.addInputPin('Render State', [], VVVV.PinTypes.CanvasRenderState);
   var transformIn = this.addInputPin('Transform', [], VVVV.PinTypes.Transform);
   var clippingLayerIn = this.addInputPin('Clipping Layer', [], VVVV.PinTypes.CanvasLayer);
@@ -566,8 +595,8 @@ VVVV.Nodes.TextCanvas = function(id, graph) {
   var layers = [];
 
   var Text = function() {
-    this.transform = mat4.create();
-    mat4.identity(this.transform);
+    this.transform = glMatrix.mat4.create();
+    glMatrix.mat4.identity(this.transform);
     this.text = "VVVV.js";
     this.font = "sans-serif";
     this.align = 'start';
@@ -628,7 +657,7 @@ VVVV.Nodes.TextCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.TextCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.TextCanvas.prototype = new Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -647,6 +676,8 @@ VVVV.Nodes.BezierCurveCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var renderStateIn = this.addInputPin('Render State', [], VVVV.PinTypes.CanvasRenderState);
   var transformIn = this.addInputPin('Transform', [], VVVV.PinTypes.Transform);
   var clippingLayerIn = this.addInputPin('Clipping Layer', [], VVVV.PinTypes.CanvasLayer);
@@ -663,8 +694,8 @@ VVVV.Nodes.BezierCurveCanvas = function(id, graph) {
   var layers = [];
 
   var BezierCurve = function() {
-    this.transform = mat4.create();
-    mat4.identity(this.transform);
+    this.transform = glMatrix.mat4.create();
+    glMatrix.mat4.identity(this.transform);
     this.x = [];
     this.y = [];
     this.c1x = [];
@@ -776,7 +807,7 @@ VVVV.Nodes.BezierCurveCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.BezierCurveCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.BezierCurveCanvas.prototype = new Node();
 
 
 
@@ -797,6 +828,8 @@ VVVV.Nodes.QuadCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var transformIn = this.addInputPin('Transform', [], VVVV.PinTypes.Transform);
   var clippingLayerIn = this.addInputPin('Clipping Layer', [], VVVV.PinTypes.CanvasLayer);
   var textureIn = this.addInputPin('Texture', [], VVVV.PinTypes.HTML5Texture);
@@ -807,9 +840,9 @@ VVVV.Nodes.QuadCanvas = function(id, graph) {
   var layers = [];
 
   var Quad = function() {
-    this.transform = mat4.create();
+    this.transform = glMatrix.mat4.create();
     this.clippingLayer = defaultCanvasLayer;
-    mat4.identity(this.transform);
+    glMatrix.mat4.identity(this.transform);
     this.texture = VVVV.PinTypes.HTML5Texture.defaultValue();
     this.color = [1.0, 1.0, 1.0, 1.0];
 
@@ -871,7 +904,7 @@ VVVV.Nodes.QuadCanvas = function(id, graph) {
 
   }
 }
-VVVV.Nodes.QuadCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.QuadCanvas.prototype = new Node();
 
 
 /*
@@ -891,13 +924,15 @@ VVVV.Nodes.GroupCanvas = function(id, graph) {
     compatibility_issues: []
   };
 
+  this.environments = ['browser'];
+
   var layerCountIn = this.addInvisiblePin("Layer Count", [2], VVVV.PinTypes.Value);
 
   var layerIns = [];
 
   var layerOut = this.addOutputPin("Layer", [], VVVV.PinTypes.CanvasLayer);
 
-  this.initialize = function() {
+  this.configure = function() {
     var layerCount = Math.max(2, layerCountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, layerIns, layerCount, function(i) {
       return this.addInputPin("Layer "+(i+1), [], VVVV.PinTypes.CanvasLayer);
@@ -905,8 +940,6 @@ VVVV.Nodes.GroupCanvas = function(id, graph) {
   }
 
   this.evaluate = function() {
-    if (layerCountIn.pinIsChanged())
-      this.initialize();
     var outSliceIdx = 0;
     var layerCount = layerIns.length;
     var sliceCount;
@@ -927,7 +960,7 @@ VVVV.Nodes.GroupCanvas = function(id, graph) {
   }
 
 }
-VVVV.Nodes.GroupCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.GroupCanvas.prototype = new Node();
 
 
 /*
@@ -940,13 +973,17 @@ VVVV.Nodes.GroupCanvas.prototype = new VVVV.Core.Node();
 VVVV.Nodes.RendererCanvas = function(id, graph) {
   this.constructor(id, "Renderer (Canvas VVVVjs)", graph);
 
+  this.environments = ['browser'];
+
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-  
+
+  this.environments = ['browser'];
+
   this.auto_nil = false;
 
   var layersIn = this.addInputPin("Layers", [], VVVV.PinTypes.CanvasLayer);
@@ -954,9 +991,10 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
   var bgColorIn = this.addInputPin("Background Color", [new VVVV.Types.Color("0.0, 0.0, 0.0, 1.0")], VVVV.PinTypes.Color);
   var bufferWidthIn = this.addInputPin("Backbuffer Width", [0], VVVV.PinTypes.Value);
   var bufferHeightIn = this.addInputPin("Backbuffer Height", [0], VVVV.PinTypes.Value);
+  var parentIn = this.addInputPin("Parent Element", [], VVVV.PinTypes.HTMLLayer);
   var viewIn = this.addInputPin("View", [], VVVV.PinTypes.Transform);
 
-  var canvasOut = this.addOutputPin("Canvas Out", [], VVVV.PinTypes.CanvasGraphics);
+  var canvasOut = this.addOutputPin("Canvas Out", [], VVVV.PinTypes.HTMLLayer);
 
   var ctx;
   var canvasWidth;
@@ -964,8 +1002,9 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
   var bgColor = [0.0, 0.0, 0.0, 1.0];
   var clear = 1;
   var canvas;
-  var viewT = mat4.create();
+  var viewT = glMatrix.mat4.create();
   var projT;
+  var layer;
 
   // this is actually some code duplication, because the very same exists in Renderer (EX9)
   function attachMouseEvents(canvas) {
@@ -1044,15 +1083,25 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
 
     var selector = this.invisiblePins["Descriptive Name"].getValue(0);
     var targetElement = $(selector).get(0);
+
     if (!targetElement || targetElement.nodeName!='CANVAS') {
       var w = parseInt(bufferWidthIn.getValue(0));
       var h = parseInt(bufferHeightIn.getValue(0));
       w = w > 0 ? w : 512;
       h = h > 0 ? h : 512;
-      canvas = $('<canvas width="'+w+'" height="'+h+'" id="vvvv-js-generated-renderer-'+(new Date().getTime())+'" class="vvvv-js-generated-renderer"></canvas>');
-      if (!targetElement) targetElement = 'body';
-      $(targetElement).append(canvas);
-      canvas = canvas.get(0);
+      layer = new VVVV.Types.HTMLLayer('canvas');
+      layer.setAttribute('width', w);
+      layer.setAttribute('height', h);
+      layer.setAttribute('id', 'vvvv-js-generated-renderer-'+(new Date().getTime()));
+      layer.setAttribute('class', 'vvvv-js-generated-renderer');
+      if (!targetElement) {
+        if (parentIn.isConnected() && parentIn.getValue(0))
+          targetElement = parentIn.getValue(0).element;
+        else
+          targetElement = 'body';
+      }
+      $(targetElement).append(layer.element);
+      canvas = layer.element.get(0);
     }
     else
       canvas = targetElement;
@@ -1080,7 +1129,7 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
 
   this.evaluate = function() {
 
-    if (this.invisiblePins["Descriptive Name"].pinIsChanged()) {
+    if (this.invisiblePins["Descriptive Name"].pinIsChanged() || parentIn.pinIsChanged()) {
       if ($(canvas).hasClass('vvvv-js-generated-renderer'))
         $(canvas).remove();
       this.getContext();
@@ -1100,9 +1149,9 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
         canvasHeight = h;
         $(canvas).attr('height', canvasHeight);
       }
-      projT = mat4.create([canvasWidth/2, 0, 0, 0, 0, -canvasHeight/2, 0, 0, 0, 0, 1, 0, canvasWidth/2, canvasHeight/2, 0, 1]);
+      projT = glMatrix.mat4.create([canvasWidth/2, 0, 0, 0, 0, -canvasHeight/2, 0, 0, 0, 0, 1, 0, canvasWidth/2, canvasHeight/2, 0, 1]);
       if (viewIn.getValue(0))
-        mat4.multiply(projT, viewIn.getValue(0), viewT);
+        glMatrix.mat4.multiply(projT, viewIn.getValue(0), viewT);
     }
 
     if (bgColorIn.pinIsChanged() && bgColorIn.getValue(0)!=undefined) {
@@ -1127,7 +1176,7 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
       }
 
       if (viewIn.pinIsChanged()) {
-        mat4.multiply(projT, viewIn.getValue(0), viewT);
+        glMatrix.mat4.multiply(projT, viewIn.getValue(0), viewT);
       }
 
       ctx.restoreView();
@@ -1139,7 +1188,7 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
         }
       }
 
-      canvasOut.setValue(0, canvas);
+      canvasOut.setValue(0, layer);
 
     }
 
@@ -1149,6 +1198,56 @@ VVVV.Nodes.RendererCanvas = function(id, graph) {
   }
 
 }
-VVVV.Nodes.RendererCanvas.prototype = new VVVV.Core.Node();
+VVVV.Nodes.RendererCanvas.prototype = new Node();
 
-}(vvvvjs_jquery));
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ NODE: AsDataURL (Canvas)
+ Author(s): Matthias Zauner
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+VVVV.Nodes.AsDataURLCanvas = function(id, graph) {
+  this.constructor(id, "AsDataURL (Canvas)", graph);
+
+  this.environments = ['browser'];
+
+  this.meta = {
+    authors: ['Matthias Zauner'],
+    original_authors: ['VVVV Group'],
+    credits: [],
+    compatibility_issues: []
+  };
+
+  var canvasIn = this.addInputPin("Canvas Element In", [], VVVV.PinTypes.HTMLLayer);
+  var typeIn = this.addInputPin("Type", ['text/png'], VVVV.PinTypes.Enum);
+  typeIn.enumOptions = ['text/png', 'text/jpg'];
+  var qualityIn = this.addInputPin("Quality", [1.0], VVVV.PinTypes.Value);
+  var excludePrefixIn = this.addInputPin("Exclude Prefix", [0], VVVV.PinTypes.Value);
+  var updateIn = this.addInputPin("Update", [0], VVVV.PinTypes.Value);
+
+  var outputOut = this.addOutputPin("Output", [''], VVVV.PinTypes.String);
+
+  var str;
+
+  this.evaluate = function() {
+    if (!canvasIn.isConnected() || canvasIn.getValue(0).element.get(0).tagName!='CANVAS') {
+      outputOut.setValue(0, '');
+      return;
+    }
+    if (updateIn.getValue(0)>=0.5 || typeIn.pinIsChanged() || qualityIn.pinIsChanged() || excludePrefixIn.pinIsChanged()) {
+      str = canvasIn.getValue(0).element.get(0).toDataURL(typeIn.getValue(0), qualityIn.getValue(0));
+      if (excludePrefixIn.getValue(0)>=0.5)
+        str = str.substring(("data:"+typeIn.getValue(0)+";base64,").length+1);
+      outputOut.setValue(0, str);
+    }
+
+  }
+
+}
+VVVV.Nodes.AsDataURLCanvas.prototype = new Node();
+
+
+
+});
