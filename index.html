@@ -17,6 +17,7 @@
 				$("#hue_slider").slider({
 					min: 0,
 					max: 1,
+					value:0.5,
 					step:0.01,
 					slide: function(event, ui) {
 						$("#hue").val(ui.value);
@@ -26,6 +27,7 @@
 				$("#saturation_slider").slider({
 					min: 0,
 					max: 1,
+					value:0.5,
 					step:0.01,
 					slide: function(event, ui) {
 						$("#saturation").val(ui.value);
@@ -36,6 +38,7 @@
 				$("#value_slider").slider({
 					min: 0,
 					max: 1,
+					value:0.5,
 					step:0.01,
 					slide: function(event, ui) {
 						$("#value").val(ui.value);
@@ -53,9 +56,9 @@
 		<div id="content">
 		</div>
 		<div id="sliders">
-			<div id="hue_slider"/><input type="hidden" id="hue"/></div>
-			<div id="saturation_slider"/><input type="hidden" id="saturation"/></div>
-			<div id="value_slider"/><input type="hidden" id="value"/></div>
+			<div id="hue_slider"/><input type="hidden" id="hue" value="0.5"/></div>
+			<div id="saturation_slider"/><input type="hidden" id="saturation" value="0.5"/></div>
+			<div id="value_slider"/><input type="hidden" id="value" value="0.5"/></div>
 		</div>
 	</body>
 </html>
