@@ -3,8 +3,6 @@
 	<head>
 		<link rel="stylesheet" href="css/styles.css" media="all">
 		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-3.3.1.min.js"></script>
-		<script language="JavaScript" src="js/vvvv_js/lib/jquery-ui/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="js/vvvv_js/lib/jquery-ui/jquery-ui.min.css">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 		<script language="JavaScript" src="js/vvvv_js/vvvv.js"></script>
@@ -17,36 +15,21 @@
 					console.log('VVVV.js initialized'); 
 				});
 
-				$("#hue_slider").slider({
-					min: 0,
-					max: 1,
-					value:0.5,
-					step:0.01,
-					slide: function(event, ui) {
-						$("#hue").val(ui.value);
-				  	}
-				});
+				$("#hue_slider").on("input", function(){
+					$("#hue").val($("#hue_slider").val());
+			  	});
 
-				$("#saturation_slider").slider({
-					min: 0,
-					max: 1,
-					value:0.5,
-					step:0.01,
-					slide: function(event, ui) {
-						$("#saturation").val(ui.value);
+			  	$("#hue_slider").on("input", function(){
+					$("#hue").val($("#hue_slider").val());
+			  	});
 
-				  	}
-				});
+			  	$("#saturation_slider").on("input", function(){
+					$("#saturation").val($("#saturation_slider").val());
+			  	});
 
-				$("#value_slider").slider({
-					min: 0,
-					max: 1,
-					value:0.5,
-					step:0.01,
-					slide: function(event, ui) {
-						$("#value").val(ui.value);
-				  	}
-				});
+			  	$("#value_slider").on("input", function(){
+					$("#value").val($("#value_slider").val());
+			  	});
 
 				$('input:radio').change(function(e) {
 					if($(e.target).attr("name") != "back") {
@@ -86,12 +69,18 @@
 				<div id="content" class="offset-sm-2 col-sm-6">
 				</div>
 				<div id="sliders" class="col-sm-2">
-					<div id="hue_slider"/><input type="hidden" id="hue" value="0.5"/></div>
+					<input type="range" class="form-control" id="hue_slider" min="0" max="1" step="0.01"/>
+					<input type="hidden" id="hue" value="0.5"/>
 					<label for="hue_slider">H</label>
-					<div id="saturation_slider"/><input type="hidden" id="saturation" value="0.5"/></div>
+
+					<input type="range" class="form-control" id="saturation_slider" min="0" max="1" step="0.01"/>
+					<input type="hidden" id="saturation" value="0.5"/>
 					<label for="saturation_slider">S</label>
-					<div id="value_slider"/><input type="hidden" id="value" value="0.5"/></div>
+					
+					<input type="range" class="form-control" id="value_slider" min="0" max="1" step="0.01"/>
+					<input type="hidden" id="value" value="0.5"/>
 					<label for="value_slider">V</label>
+					
 				</div>
 			</div>
 		</div>
