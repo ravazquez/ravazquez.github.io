@@ -4,11 +4,7 @@
 // Additional authors of sub components are mentioned at the specific code locations.
 // This component was developed is (c) 2014 Lukas Winter, distributed under the MIT license.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 if (!window.AudioContext)
   return;
@@ -160,7 +156,7 @@ function WebAudioNode(id, name, graph) {
     this.auto_evaluate = false;
   }
 }
-WebAudioNode.prototype = new Node();
+WebAudioNode.prototype = new VVVV.Core.Node();
 WebAudioNode.prototype.truncateAPIMultiNode = function(n)
 {
   var that = this;
@@ -340,7 +336,6 @@ VVVV.Nodes.FileAudioBuffer = function(id, graph) {
 
   var that = this;
   this.auto_evaluate = false;
-  this.environments = ['browser'];
 
   var filenamePin = this.addInputPin("Filename", [""], VVVV.PinTypes.String);
   var outputPin = this.addOutputPin("Audio Out", [], VVVV.PinTypes.AudioBuffer);
@@ -371,7 +366,7 @@ VVVV.Nodes.FileAudioBuffer = function(id, graph) {
 
   }
 };
-VVVV.Nodes.FileAudioBuffer.prototype = new Node();
+VVVV.Nodes.FileAudioBuffer.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -391,7 +386,6 @@ VVVV.Nodes.FFT = function(id, graph) {
   };
 
   this.auto_evaluate = true;
-  this.environments = ['browser'];
 
   var that = this;
 
@@ -468,8 +462,6 @@ VVVV.Nodes.MediaElementSource = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   var audioIn = this.addInputPin('Audio', [], this);
   var audioOut = this.addOutputPin('Output', [], VVVV.PinTypes.WebAudio);
   audioOut.apiName = 0;
@@ -522,8 +514,6 @@ VVVV.Nodes.AudioDestination = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   this.createAPISingleNode = function() { return audioContext.destination; };
 
   this.evaluate = function() {
@@ -548,8 +538,6 @@ VVVV.Nodes.AudioIn = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
-
-  this.environments = ['browser'];
 
   var that = this;
 
@@ -611,8 +599,6 @@ VVVV.Nodes.Oscillator = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   var typeIn = this.addInputPin("Type", ['sine'], VVVV.PinTypes.Enum);
   typeIn.enumOptions = ['sine', 'square', 'sawtooth', 'triangle', 'custom' ];
 
@@ -655,8 +641,6 @@ VVVV.Nodes.DelayAudio = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   //Deactivate this until we find out how this plays together with spreadability
   //this.delays_output = true;
 
@@ -692,8 +676,6 @@ VVVV.Nodes.Gain = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   this.evaluate = function() {
     this.updateAudioConnections();
     this.updateParamPins();
@@ -718,8 +700,6 @@ VVVV.Nodes.AddAudio = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
-
-  this.environments = ['browser'];
 
   var cntCfg = this.addInvisiblePin("Input Count",[2],VVVV.PinTypes.Value);
   var that = this;
@@ -759,34 +739,32 @@ VVVV.Nodes.AddAudio.prototype = new WebAudioNode('Gain');
 
 VVVV.Nodes.AddAudioSpectral = function(id, graph) {
   WebAudioNode.call(this, id, 'Add (HTML5 Audio Spectral)', graph);
-
+  
   this.meta = {
     authors: ['Lukas Winter'],
     original_authors: [],
     credits: [],
     compatibility_issues: []
   };
-
-  this.environments = ['browser'];
-
+  
   var that = this;
   var apiNode;
-
+  
   this.createAPISingleNode = function()
   {
     if(!apiNode)
       apiNode = audioContext.createGain();
     return apiNode;
   };
-
+  
   this.initialize = function()
   {
     this.createAPIMultiNode(1);
     this.createAudioPins();
   };
-
+  
   this.evaluate = function() {
-
+    
     this.updateAudioConnections();
     this.audioOutputPins[0].setSliceCount(1);
   }
@@ -809,8 +787,6 @@ VVVV.Nodes.Convolver = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
-
-  this.environments = ['browser'];
 
   var responseIn = this.addInputPin("Impulse Response", [], VVVV.PinTypes.AudioBuffer);
   var normalizeIn = this.addInputPin("Normalize", [1], VVVV.PinTypes.Value);
@@ -848,8 +824,6 @@ VVVV.Nodes.WaveShaper = function(id, graph) {
     credits: [],
     compatibility_issues: []
   };
-
-  this.environments = ['browser'];
 
   var curveIn = this.addInputPin("Curve", [], VVVV.PinTypes.Value);
   var binSizeIn = this.addInputPin("Bin Size", [-1], VVVV.PinTypes.Value);
@@ -909,8 +883,6 @@ VVVV.Nodes.BiquadFilter = function(id, graph) {
     compatibility_issues: []
   };
 
-  this.environments = ['browser'];
-
   var typeIn = this.addInputPin("Type", ['lowpass'], VVVV.PinTypes.Enum);
   typeIn.enumOptions = ["lowpass", "highpass", "bandpass", "lowshelf", "highshelf", "peaking", "notch", "allpass" ];
 
@@ -946,7 +918,6 @@ VVVV.Nodes.DynamicsCompressor = function(id, graph) {
   };
 
   this.auto_evaluate = true;
-  this.environments = ['browser'];
 
   var reductionOut = this.addOutputPin('Reduction', [ 0 ], VVVV.PinTypes.Value);
 
@@ -982,7 +953,6 @@ VVVV.Nodes.BeatDetector = function(id, graph) {
   };
 
   this.auto_evaluate = true;
-  this.environments = ['browser'];
 
   var that = this;
   var fftSize = 2048;
@@ -1023,4 +993,4 @@ VVVV.Nodes.BeatDetector = function(id, graph) {
 VVVV.Nodes.BeatDetector.prototype = new WebAudioNode('Analyser');
 VVVV.Nodes.BeatDetector.requirements = ["beatdetektor"];
 
-});
+}(vvvvjs_jquery));

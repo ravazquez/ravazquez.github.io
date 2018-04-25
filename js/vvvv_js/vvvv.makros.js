@@ -3,13 +3,9 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
+(function($) {
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-
-define(function(require,exports) {
-
-
-var Makros = [
+VVVV.Makros = [
   {name: "Value", command: "<PATCH><NODE id={id} systemname='IOBox (Value Advanced)'><BOUNDS type='Node' left={left} top={top}></BOUNDS></NODE></PATCH>"},
   {name: "String", command: "<PATCH><NODE id={id} systemname='IOBox (String)'><BOUNDS type='Node' left={left} top={top}></BOUNDS></NODE></PATCH>"},
   {name: "Color", command: "<PATCH><NODE id={id} systemname='IOBox (Color)'><BOUNDS type='Node' left={left} top={top}></BOUNDS></NODE></PATCH>"},
@@ -20,7 +16,6 @@ var Makros = [
   {name: "*2", command: "<PATCH><NODE id={id} systemname='Multiply (Value)'><PIN pinname='Input 2' values='|2|'></PIN><BOUNDS type='Node' left={left} top={top}></BOUNDS></NODE></PATCH>"},
   {name: "/2", command: "<PATCH><NODE id={id} systemname='Divide (Value)'><PIN pinname='Input 2' values='|2|'></PIN><BOUNDS type='Node' left={left} top={top}></BOUNDS></NODE></PATCH>"},
 ]
-
-return Makros;
-
-});
+  
+  
+}(vvvvjs_jquery));

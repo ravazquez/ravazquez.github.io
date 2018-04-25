@@ -3,11 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +58,7 @@ VVVV.Nodes.Polar3d = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Polar3d.prototype = new Node();
+VVVV.Nodes.Polar3d.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -117,7 +113,7 @@ VVVV.Nodes.Cartesian3d = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Cartesian3d.prototype = new Node();
+VVVV.Nodes.Cartesian3d.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -175,7 +171,7 @@ VVVV.Nodes.Normalize3d = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Normalize3d.prototype = new Node();
+VVVV.Nodes.Normalize3d.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -225,7 +221,7 @@ VVVV.Nodes.Normalize3dVector = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Normalize3dVector.prototype = new Node();
+VVVV.Nodes.Normalize3dVector.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -274,7 +270,7 @@ VVVV.Nodes.Multiply3dCross = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Multiply3dCross.prototype = new Node();
+VVVV.Nodes.Multiply3dCross.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -318,7 +314,7 @@ VVVV.Nodes.Multiply3dDot = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Multiply3dDot.prototype = new Node();
+VVVV.Nodes.Multiply3dDot.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -364,7 +360,7 @@ VVVV.Nodes.Multiply3dVector = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Multiply3dVector.prototype = new Node();
+VVVV.Nodes.Multiply3dVector.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -411,72 +407,6 @@ VVVV.Nodes.Multiply4dVector = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Multiply4dVector.prototype = new Node();
+VVVV.Nodes.Multiply4dVector.prototype = new VVVV.Core.Node();
 
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: Cross (3d)
- Author(s): 'David Gann'
- Original Node Author(s): 'VVVV Group'
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.Cross3d = function(id, graph) {
-  this.constructor(id, "Cross (3d)", graph);
-
-  this.meta = {
-    authors: ['David Gann'],
-    original_authors: ['VVVV Group'],
-    credits: [],
-    compatibility_issues: []
-  };
-
-  this.auto_evaluate = false;
-
-  // input pins
-  var xinIn = this.addInputPin('X In', [0], VVVV.PinTypes.Value);
-  var yinIn = this.addInputPin('Y In', [0], VVVV.PinTypes.Value);
-  var zinIn = this.addInputPin('Z In', [0], VVVV.PinTypes.Value);
-  var includeupperIn = this.addInputPin('Include Upper', [1], VVVV.PinTypes.Value);
-  var includelowerIn = this.addInputPin('Include Lower', [1], VVVV.PinTypes.Value);
-  var includeequalIn = this.addInputPin('Include Equal', [1], VVVV.PinTypes.Value);
-
-  // output pins
-  var xoutOut = this.addOutputPin('X Out', [0], VVVV.PinTypes.Value);
-  var youtOut = this.addOutputPin('Y Out', [0], VVVV.PinTypes.Value);
-  var zoutOut = this.addOutputPin('Z Out', [0], VVVV.PinTypes.Value);
-
-  // evaluate() will be called each frame
-  // (if the input pins have changed, or the nodes is flagged as auto-evaluating)
-  this.evaluate = function() {
-
-    var idx = 0;
-    for (var k=0;k<zinIn.getSliceCount(); k++) {
-        for (var i=0; i<yinIn.getSliceCount(); i++) {
-          for (var j=0; j<xinIn.getSliceCount(); j++) {
-            if (includeupperIn.getValue(0)<0.5 && i>j)
-              continue;
-            if (includelowerIn.getValue(0)<0.5 && i<j)
-              continue;
-            if (includeequalIn.getValue(0)<0.5 && i==j)
-              continue;
-            zoutOut.setValue(idx, xinIn.getValue(k));
-            xoutOut.setValue(idx, xinIn.getValue(j));
-            youtOut.setValue(idx, yinIn.getValue(i));
-            idx++;
-          }
-        }
-    }
-    xoutOut.setSliceCount(idx);
-    youtOut.setSliceCount(idx);
-    youtOut.setSliceCount(idx);
-  }
-
-}
-VVVV.Nodes.Cross3d.prototype = new Node();
-
-
-
-});
-
+}(vvvvjs_jquery));

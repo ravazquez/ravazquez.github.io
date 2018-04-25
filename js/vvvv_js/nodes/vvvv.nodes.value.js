@@ -3,13 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-
-define(function(require,exports) {
-
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 
 /*
@@ -22,33 +16,35 @@ var VVVV = require('core/vvvv.core.defines');
 
 VVVV.Nodes.AddValue = function(id, graph) {
   this.constructor(id, "Add (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['']
   };
-
-  var cntCfg = this.addInvisiblePin("Input Count",[2],VVVV.PinTypes.Value);
-  var inputPins = [];
+  
+  var cntCfg = this.addInvisiblePin("Input Count",[2],VVVV.PinTypes.Value); 
+  var inputPins = []; 
   var outPin = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);;
-
-  this.configure = function() {
+  
+  this.initialize = function() {
     var inputCount = Math.max(2, cntCfg.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
     })
   }
+  
 
-
-  this.evaluate = function()
+  this.evaluate = function() 
   {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
   	var maxSpreadSize = this.getMaxInputSliceCount();
-
+  	
   	outPin.setSliceCount(maxSpreadSize);
-
-    for (var i=0; i<maxSpreadSize; i++)
+	
+    for (var i=0; i<maxSpreadSize; i++) 
   	{
   		var o = inputPins[0].getValue(i);
   		for (var j=1; j < inputPins.length;j++)
@@ -56,10 +52,13 @@ VVVV.Nodes.AddValue = function(id, graph) {
   			o += inputPins[j].getValue(i);
   		}
       outPin.setValue(i,o);
-    }
+    }  
   }
-
+  
   this.getCode = function() {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
+    
     var pinnames = [];
     for (var i=0; i<inputPins.length; i++) {
       pinnames.push("{Input "+(i+1)+"}")
@@ -68,7 +67,7 @@ VVVV.Nodes.AddValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.AddValue.prototype = new Node();
+VVVV.Nodes.AddValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,33 +79,35 @@ VVVV.Nodes.AddValue.prototype = new Node();
 
 VVVV.Nodes.SubtractValue = function(id, graph) {
   this.constructor(id, "Subtract (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['']
   };
-
-  var cntCfg = this.addInvisiblePin("Input Count",[2.0],VVVV.PinTypes.Value);
-  var inputPins = [];
+  
+  var cntCfg = this.addInvisiblePin("Input Count",[2.0],VVVV.PinTypes.Value); 
+  var inputPins = []; 
   var outPin = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);;
-
-  this.configure = function() {
+  
+  this.initialize = function() {
     var inputCount = Math.max(2, cntCfg.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
     })
   }
+  
 
-
-  this.evaluate = function()
+  this.evaluate = function() 
   {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
   	var maxSpreadSize = this.getMaxInputSliceCount();
-
+  	
   	outPin.setSliceCount(maxSpreadSize);
-
-    for (var i=0; i<maxSpreadSize; i++)
+  	
+    for (var i=0; i<maxSpreadSize; i++) 
   	{
   		var o = inputPins[0].getValue(i);
   		for (var j=1; j < inputPins.length;j++)
@@ -114,10 +115,13 @@ VVVV.Nodes.SubtractValue = function(id, graph) {
   			o -= inputPins[j].getValue(i);
   		}
       outPin.setValue(i,o);
-    }
+    }  
   }
-
+  
   this.getCode = function() {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
+    
     var pinnames = [];
     for (var i=0; i<inputPins.length; i++) {
       pinnames.push("{Input "+(i+1)+"}")
@@ -126,7 +130,7 @@ VVVV.Nodes.SubtractValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.SubtractValue.prototype = new Node();
+VVVV.Nodes.SubtractValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -139,24 +143,24 @@ VVVV.Nodes.SubtractValue.prototype = new Node();
 
 VVVV.Nodes.EqValue = function(id, graph) {
   this.constructor(id, "EQ (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner', 'Fibo'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   var input1In = this.addInputPin("Input 1", [0.0], VVVV.PinTypes.Value);
   var input2In = this.addInputPin("Input 2", [0.0], VVVV.PinTypes.Value);
   var epsilonIn = this.addInputPin("Epsilon", [0.0], VVVV.PinTypes.Value);
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
   var invOutputOut = this.addOutputPin("Inverse Output", [0.0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var result = 0;
       if (Math.abs(input1In.getValue(i)-input2In.getValue(i))<=Math.abs(epsilonIn.getValue(i)))
@@ -169,7 +173,7 @@ VVVV.Nodes.EqValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.EqValue.prototype = new Node();
+VVVV.Nodes.EqValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -182,22 +186,22 @@ VVVV.Nodes.EqValue.prototype = new Node();
 
 VVVV.Nodes.GtValue = function(id, graph) {
   this.constructor(id, "GT (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['No dynamic pin count yet']
   };
-
+  
   var input1In = this.addInputPin("Input 1", [0.0], VVVV.PinTypes.Value);
   var input2In = this.addInputPin("Input 2", [0.0], VVVV.PinTypes.Value);
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var result = 0;
       if (input1In.getValue(i)>input2In.getValue(i))
@@ -206,13 +210,13 @@ VVVV.Nodes.GtValue = function(id, graph) {
     }
     outputOut.setSliceCount(maxSize);
   }
-
+  
   this.getCode = function() {
     return "{Input 1} > {Input 2} ? 1 : 0";
   }
 
 }
-VVVV.Nodes.GtValue.prototype = new Node();
+VVVV.Nodes.GtValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -224,22 +228,22 @@ VVVV.Nodes.GtValue.prototype = new Node();
 
 VVVV.Nodes.LtValue = function(id, graph) {
   this.constructor(id, "LT (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['No dynamic pin count yet']
   };
-
+  
   var input1In = this.addInputPin("Input 1", [0.0], VVVV.PinTypes.Value);
   var input2In = this.addInputPin("Input 2", [0.0], VVVV.PinTypes.Value);
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var result = 0;
       if (input1In.getValue(i)<input2In.getValue(i))
@@ -248,13 +252,13 @@ VVVV.Nodes.LtValue = function(id, graph) {
     }
     outputOut.setSliceCount(maxSize);
   }
-
+  
   this.getCode = function() {
     return "{Input 1} < {Input 2} ? 1 : 0";
   }
 
 }
-VVVV.Nodes.LtValue.prototype = new Node();
+VVVV.Nodes.LtValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -266,33 +270,35 @@ VVVV.Nodes.LtValue.prototype = new Node();
 
 VVVV.Nodes.MultiplyValue = function(id, graph) {
   this.constructor(id, "Multiply (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['']
   };
-
-  var cntCfg = this.addInvisiblePin("Input Count",[2.0],VVVV.PinTypes.Value);
-  var inputPins = [];
+  
+  var cntCfg = this.addInvisiblePin("Input Count",[2.0],VVVV.PinTypes.Value); 
+  var inputPins = []; 
   var outPin = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);;
-
-  this.configure = function() {
+  
+  this.initialize = function() {
     var inputCount = Math.max(2, cntCfg.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [1.0], VVVV.PinTypes.Value);
     })
   }
+  
 
-
-  this.evaluate = function()
+  this.evaluate = function() 
   {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
   	var maxSpreadSize = this.getMaxInputSliceCount();
-
+  	
   	outPin.setSliceCount(maxSpreadSize);
-
-    for (var i=0; i<maxSpreadSize; i++)
+  	
+    for (var i=0; i<maxSpreadSize; i++) 
   	{
   		var o = inputPins[0].getValue(i);
   		for (var j=1; j < inputPins.length;j++)
@@ -300,10 +306,13 @@ VVVV.Nodes.MultiplyValue = function(id, graph) {
   			o *= inputPins[j].getValue(i);
   		}
       outPin.setValue(i,o);
-    }
+    } 
   }
-
+  
   this.getCode = function() {
+    if (cntCfg.pinIsChanged())
+      this.initialize();
+    
     var pinnames = [];
     for (var i=0; i<inputPins.length; i++) {
       pinnames.push("{Input "+(i+1)+"}")
@@ -312,7 +321,7 @@ VVVV.Nodes.MultiplyValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.MultiplyValue.prototype = new Node();
+VVVV.Nodes.MultiplyValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -324,24 +333,24 @@ VVVV.Nodes.MultiplyValue.prototype = new Node();
 
 VVVV.Nodes.DivideValue = function(id, graph) {
   this.constructor(id, "Divide (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   var inputCfg = this.addInvisiblePin("Inputs Count",[2.0],VVVV.PinTypes.Value);
   var input1In = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
   var input2In = this.addInputPin("Input 2", [0.0], VVVV.PinTypes.Value);
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
-
-
+  
+  
   this.initialize = function() {
-
-
+	
+    
   }
 
   this.evaluate = function() {
@@ -356,13 +365,13 @@ VVVV.Nodes.DivideValue = function(id, graph) {
     }
     outputOut.setSliceCount(maxSize);
   }
-
+  
   this.getCode = function() {
     return "{Input} / {Input 2}"
   }
 
 }
-VVVV.Nodes.DivideValue.prototype = new Node();
+VVVV.Nodes.DivideValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -374,21 +383,19 @@ VVVV.Nodes.DivideValue.prototype = new Node();
 
 VVVV.Nodes.IOBoxValueAdvanced = function(id, graph) {
   this.constructor(id, "IOBox (Value Advanced)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
-  this.isIOBox = true;
-
+  
   //this.addInputPin("SliceOffset", [0], this);
   //this.addInputPin("X Input Value", [0.0], this);
   this.addInputPin("Y Input Value", [0.0], VVVV.PinTypes.Value);
   this.addInvisiblePin("Rows",[1.0],VVVV.PinTypes.Value);
-
+  
   //this.addOutputPin("X Output Value", [0.0], this);
   this.addOutputPin("Y Output Value", [0.0], VVVV.PinTypes.Value);
 
@@ -405,7 +412,7 @@ VVVV.Nodes.IOBoxValueAdvanced = function(id, graph) {
   }
 
 }
-VVVV.Nodes.IOBoxValueAdvanced.prototype = new Node();
+VVVV.Nodes.IOBoxValueAdvanced.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -419,18 +426,18 @@ VVVV.Nodes.IOBoxValueAdvanced.prototype = new Node();
 
 VVVV.Nodes.CountValue = function(id, graph) {
   this.constructor(id, "Count (Value)", graph);
-
+  
   this.auto_nil = false;
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
-
+  
   this.addOutputPin("Count", [1.0], VVVV.PinTypes.Value);
   this.addOutputPin("High", [0.0], VVVV.PinTypes.Value);
 
@@ -442,7 +449,7 @@ VVVV.Nodes.CountValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.CountValue.prototype = new Node();
+VVVV.Nodes.CountValue.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -454,31 +461,33 @@ VVVV.Nodes.CountValue.prototype = new Node();
 
 VVVV.Nodes.SwitchValueInput = function(id, graph) {
   this.constructor(id, "Switch (Value Input)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['No dynamic pin count yet']
   };
-
+  
   var inputCountIn = this.addInvisiblePin("Input Count", [2], VVVV.PinTypes.Value);
-
+  
   var switchIn = this.addInputPin("Switch", [0], VVVV.PinTypes.Value);
   var inputIn = [];
-
-  this.configure = function() {
+  
+  this.initialize = function() {
     var inputCount = Math.max(2, inputCountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputIn, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
     })
   }
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
+    if (inputCountIn.pinIsChanged())
+      this.initialize();
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       outputOut.setValue(i, inputIn[Math.round(Math.abs(switchIn.getValue(i)))%inputIn.length].getValue(i));
     }
@@ -486,7 +495,7 @@ VVVV.Nodes.SwitchValueInput = function(id, graph) {
   }
 
 }
-VVVV.Nodes.SwitchValueInput.prototype = new Node();
+VVVV.Nodes.SwitchValueInput.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -498,23 +507,23 @@ VVVV.Nodes.SwitchValueInput.prototype = new Node();
 
 VVVV.Nodes.SelectValue = function(id, graph) {
   this.constructor(id, "Select (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   var inputIn = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
   var selectIn = this.addInputPin("Select", [1], VVVV.PinTypes.Value);
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
   var formerSliceOut = this.addOutputPin("Former Slice", [0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     var outputIndex = 0;
     for (var i=0; i<maxSize; i++) {
       for (var j=0; j<selectIn.getValue(i); j++) {
@@ -528,7 +537,7 @@ VVVV.Nodes.SelectValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.SelectValue.prototype = new Node();
+VVVV.Nodes.SelectValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -541,18 +550,18 @@ VVVV.Nodes.SelectValue.prototype = new Node();
 
 VVVV.Nodes.AsString = function(id, graph) {
   this.constructor(id, "AsString (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['SubType not implemented, always returns float formatting']
   };
-
+  
   var inputIn = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
   var subtypeIn = this.addInputPin("SubType", ['Real (MinFloat .. MaxFloat)'], VVVV.PinTypes.Enum);
   subtypeIn.enumOptions = ['Real (MinFloat .. MaxFloat)', 'Integer (MinInt .. MaxInt)'];
-
+  
   var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.String);
 
   this.evaluate = function() {
@@ -572,7 +581,7 @@ VVVV.Nodes.AsString = function(id, graph) {
   }
 
 }
-VVVV.Nodes.AsString.prototype = new Node();
+VVVV.Nodes.AsString.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -584,22 +593,22 @@ VVVV.Nodes.AsString.prototype = new Node();
 
 VVVV.Nodes.Frac = function(id, graph) {
   this.constructor(id, "Frac (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   var inputIn = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
-
+  
   var wholeOut = this.addOutputPin("Whole Part", [0], VVVV.PinTypes.Value);
   var realOut = this.addOutputPin("Real Part", [0.5], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var inValue = inputIn.getValue(i);
       wholeOut.setValue(i, Math.floor(inValue));
@@ -610,7 +619,7 @@ VVVV.Nodes.Frac = function(id, graph) {
   }
 
 }
-VVVV.Nodes.Frac.prototype = new Node();
+VVVV.Nodes.Frac.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -623,30 +632,30 @@ VVVV.Nodes.Frac.prototype = new Node();
 
 VVVV.Nodes.AddValueSpectral = function(id, graph) {
   this.constructor(id, "Add (Value Spectral)", graph);
-
+  
   this.meta = {
     authors: ['David Mórász (micro.D)', 'Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
   this.addInputPin("Bin Size", [-1], VVVV.PinTypes.Value);
-
+  
   this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
     var maxSpreadSize = this.getMaxInputSliceCount();
-
+    
     var binNum = 0;
     var subIndex = 0;
     for (var j=0; j<maxSpreadSize || (this.inputPins["Bin Size"].getValue(0)>0 && (subIndex>0 || binNum%this.inputPins["Bin Size"].getSliceCount()!=0)); j++) {
       if (subIndex == 0)
         var sum = 0;
-
+        
       sum += this.inputPins["Input"].getValue(j);
-
+      
       subIndex++;
       if (this.inputPins["Bin Size"].getValue(0)>0) {
         if (subIndex>=this.inputPins["Bin Size"].getValue(binNum)) {
@@ -661,7 +670,7 @@ VVVV.Nodes.AddValueSpectral = function(id, graph) {
     this.outputPins["Output"].setSliceCount(binNum+(subIndex>0));
   }
 }
-VVVV.Nodes.AddValueSpectral.prototype = new Node();
+VVVV.Nodes.AddValueSpectral.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -673,16 +682,16 @@ VVVV.Nodes.AddValueSpectral.prototype = new Node();
 
 VVVV.Nodes.WaveShaperValue = function(id, graph) {
   this.constructor(id, "WaveShaper (Value)", graph);
-
+  
   this.meta = {
     authors: ['sebl'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
-
+  
   // input pins
   var inputIn = this.addInputPin('Input', [0], VVVV.PinTypes.Value);
   var shapeIn = this.addInputPin('Shape',["Linear"], VVVV.PinTypes.Enum);
@@ -691,13 +700,17 @@ VVVV.Nodes.WaveShaperValue = function(id, graph) {
   // output pins
   var outputOut = this.addOutputPin('Output', [0], VVVV.PinTypes.Value);
 
+  // initialize() will be called after node creation
+  this.initialize = function() {   
+  }
+
   // evaluate() will be called each frame
   // (if the input pins have changed, or the nodes is flagged as auto-evaluating)
   this.evaluate = function() {
-
+    
     var maxSize = this.getMaxInputSliceCount();
     var twoPi = 6.28318530717959;
-
+    
     for (var i=0; i<maxSize; i++) {
       var input = inputIn.getValue(i);
       var shape = shapeIn.getValue(i);
@@ -707,12 +720,12 @@ VVVV.Nodes.WaveShaperValue = function(id, graph) {
         //Linear code here
         outputOut.setValue(i, input);
         break;
-
+        
         case 'Inverse':
         //Inverse code here
         outputOut.setValue(i, 1 - input);
         break;
-
+        
         case 'Triangle':
         //Triangle code here
         if(input < 0.5){
@@ -721,32 +734,32 @@ VVVV.Nodes.WaveShaperValue = function(id, graph) {
           outputOut.setValue(i, (1 - input )* 2 );
         }
         break;
-
+      
         case 'Sine':
         //Sine code here
         //outputOut.setValue(i, input * Math.sin(input * Pi));
         inp = (( input + 0.25 ) % 1 ) * twoPi;
         outputOut.setValue(i, (Math.sin(inp) / 2) + 0.5);
         break;
-
+        
         case 'Rectangle':
         //Rectangle code here
         if(input < 0.5){
         outputOut.setValue(i, 0);
         }else{
         outputOut.setValue(i, 1);
-        }
+        }  
         break;
-
+      
       }
-
+      
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.WaveShaperValue.prototype = new Node();
+VVVV.Nodes.WaveShaperValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -759,16 +772,16 @@ VVVV.Nodes.WaveShaperValue.prototype = new Node();
 
 VVVV.Nodes.MapValue = function(id, graph) {
   this.constructor(id, "Map (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['Mirror Mapping Mode not implemented']
   };
-
+  
   this.auto_evaluate = false;
-
+  
   // input pins
   var inputIn = this.addInputPin('Input', [0.5], VVVV.PinTypes.Value);
   var srcMinimumIn = this.addInputPin('Source Minimum', [0], VVVV.PinTypes.Value);
@@ -782,9 +795,9 @@ VVVV.Nodes.MapValue = function(id, graph) {
   var outputOut = this.addOutputPin('Output', [0.5], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
-
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var input = inputIn.getValue(i);
       var srcMin = srcMinimumIn.getValue(i);
@@ -792,15 +805,15 @@ VVVV.Nodes.MapValue = function(id, graph) {
       var destMin = destMinimumIn.getValue(i);
       var destMax = destMaximumIn.getValue(i);
       var mapping = mappingIn.getValue(i);
-
+      
       if (srcMax == srcMin) {
         outputOut.setValue(i, destMin);
         continue;
       }
-
+      
       input = input - srcMin;
       srcMax = srcMax - srcMin;
-
+      
       switch (mapping) {
         case "Clamp":
           input = Math.max(0, Math.min(srcMax, input));
@@ -812,17 +825,17 @@ VVVV.Nodes.MapValue = function(id, graph) {
           // to be implemented
         break;
       }
-
+      
       var k = (destMax - destMin) / srcMax;
-
+      
       outputOut.setValue(i, input * k + destMin);
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.MapValue.prototype = new Node();
+VVVV.Nodes.MapValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -835,14 +848,14 @@ VVVV.Nodes.MapValue.prototype = new Node();
 
 VVVV.Nodes.MinValue = function(id, graph) {
   this.constructor(id, "Min (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
 
   // output pins
@@ -850,10 +863,11 @@ VVVV.Nodes.MinValue = function(id, graph) {
 
   // invisible pins
   var inputcountIn = this.addInvisiblePin('Input Count', [2], VVVV.PinTypes.Value);
-
+  
   var inputPins = [];
-
-  this.configure = function() {
+  
+  // initialize() will be called after node creation
+  this.initialize = function() {
     var inputCount = Math.max(2, inputcountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
@@ -861,23 +875,26 @@ VVVV.Nodes.MinValue = function(id, graph) {
   }
 
   this.evaluate = function() {
+    if (inputcountIn.pinIsChanged())
+      this.initialize();
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var min = undefined;
       for (var j=0; j<inputPins.length; j++) {
         if (min == undefined || inputPins[j].getValue(i) < min)
           min = inputPins[j].getValue(i);
       }
-
+      
       outputOut.setValue(i, min);
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.MinValue.prototype = new Node();
+VVVV.Nodes.MinValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -890,14 +907,14 @@ VVVV.Nodes.MinValue.prototype = new Node();
 
 VVVV.Nodes.MaxValue = function(id, graph) {
   this.constructor(id, "Max (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
 
   // output pins
@@ -905,10 +922,11 @@ VVVV.Nodes.MaxValue = function(id, graph) {
 
   // invisible pins
   var inputcountIn = this.addInvisiblePin('Input Count', [2], VVVV.PinTypes.Value);
-
+  
   var inputPins = [];
-
-  this.configure = function() {
+  
+  // initialize() will be called after node creation
+  this.initialize = function() {
     var inputCount = Math.max(2, inputcountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
@@ -916,23 +934,26 @@ VVVV.Nodes.MaxValue = function(id, graph) {
   }
 
   this.evaluate = function() {
+    if (inputcountIn.pinIsChanged())
+      this.initialize();
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var max = undefined;
       for (var j=0; j<inputPins.length; j++) {
         if (max == undefined || inputPins[j].getValue(i) > max)
           max = inputPins[j].getValue(i);
       }
-
+      
       outputOut.setValue(i, max);
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.MaxValue.prototype = new Node();
+VVVV.Nodes.MaxValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -945,14 +966,14 @@ VVVV.Nodes.MaxValue.prototype = new Node();
 
 VVVV.Nodes.ModValue = function(id, graph) {
   this.constructor(id, "Mod (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
 
   // output pins
@@ -960,10 +981,11 @@ VVVV.Nodes.ModValue = function(id, graph) {
 
   // invisible pins
   var inputcountIn = this.addInvisiblePin('Input Count', [2], VVVV.PinTypes.Value);
-
+  
   var inputPins = [];
-
-  this.configure = function() {
+  
+  // initialize() will be called after node creation
+  this.initialize = function() {
     var inputCount = Math.max(2, inputcountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
@@ -971,8 +993,11 @@ VVVV.Nodes.ModValue = function(id, graph) {
   }
 
   this.evaluate = function() {
+    if (inputcountIn.pinIsChanged())
+      this.initialize();
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var result = inputPins[0].getValue(i);
       for (var j=1; j<inputPins.length; j++) {
@@ -981,15 +1006,15 @@ VVVV.Nodes.ModValue = function(id, graph) {
         else
           result = result % inputPins[j].getValue(i);
       }
-
+      
       outputOut.setValue(i, result);
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.ModValue.prototype = new Node();
+VVVV.Nodes.ModValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -1002,14 +1027,14 @@ VVVV.Nodes.ModValue.prototype = new Node();
 
 VVVV.Nodes.PowerValue = function(id, graph) {
   this.constructor(id, "Power (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
 
   // output pins
@@ -1017,10 +1042,11 @@ VVVV.Nodes.PowerValue = function(id, graph) {
 
   // invisible pins
   var inputcountIn = this.addInvisiblePin('Input Count', [2], VVVV.PinTypes.Value);
-
+  
   var inputPins = [];
-
-  this.configure = function() {
+  
+  // initialize() will be called after node creation
+  this.initialize = function() {
     var inputCount = Math.max(2, inputcountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
@@ -1028,22 +1054,25 @@ VVVV.Nodes.PowerValue = function(id, graph) {
   }
 
   this.evaluate = function() {
+    if (inputcountIn.pinIsChanged())
+      this.initialize();
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var result = inputPins[0].getValue(i);
       for (var j=1; j<inputPins.length; j++) {
         result = Math.pow(result, inputPins[j].getValue(i));
       }
-
+      
       outputOut.setValue(i, result);
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.PowerValue.prototype = new Node();
+VVVV.Nodes.PowerValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -1056,16 +1085,16 @@ VVVV.Nodes.PowerValue.prototype = new Node();
 
 VVVV.Nodes.RandomValue = function(id, graph) {
   this.constructor(id, "Random (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = true;
-
+  
   // input pins
   var enabledIn = this.addInputPin('Enabled', [1], VVVV.PinTypes.Value);
   var isintegerIn = this.addInputPin('Is Integer', [0], VVVV.PinTypes.Value);
@@ -1074,17 +1103,17 @@ VVVV.Nodes.RandomValue = function(id, graph) {
 
   // output pins
   var outputOut = this.addOutputPin('Output', [0], VVVV.PinTypes.Value);
-
+  
   this.evaluate = function() {
-
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var enabled = enabledIn.getValue(i);
       var isinteger = isintegerIn.getValue(i);
       var scale = scaleIn.getValue(i);
       var preventfromdoubles = preventfromdoublesIn.getValue(i);
-
+      
       var current = outputOut.getValue(i);
       if (current==undefined)
         outputOut.setValue(i, 0.0);
@@ -1097,7 +1126,7 @@ VVVV.Nodes.RandomValue = function(id, graph) {
             r = Math.round(r);
         }
         while (preventfromdoubles>=0.5 && r==current);
-
+        
         outputOut.setValue(i, r);
       }
     }
@@ -1106,7 +1135,7 @@ VVVV.Nodes.RandomValue = function(id, graph) {
   }
 
 }
-VVVV.Nodes.RandomValue.prototype = new Node();
+VVVV.Nodes.RandomValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -1119,16 +1148,16 @@ VVVV.Nodes.RandomValue.prototype = new Node();
 
 VVVV.Nodes.SignValue = function(id, graph) {
   this.constructor(id, "Sign (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
-
+  
   // input pins
   var inputIn = this.addInputPin('Input', [0], VVVV.PinTypes.Value);
 
@@ -1138,20 +1167,20 @@ VVVV.Nodes.SignValue = function(id, graph) {
 
   this.evaluate = function() {
     var maxSize = this.getMaxInputSliceCount();
-
+    
     for (var i=0; i<maxSize; i++) {
       var input = inputIn.getValue(i);
-
+      
       signpartOut.setValue(i, input == 0 ? 0.0 : input / Math.abs(input));
       absolutepartOut.setValue(i, Math.abs(input));
     }
-
+    
     absolutepartOut.setSliceCount(maxSize);
     signpartOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.SignValue.prototype = new Node();
+VVVV.Nodes.SignValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -1164,16 +1193,16 @@ VVVV.Nodes.SignValue.prototype = new Node();
 
 VVVV.Nodes.InputMorphValue = function(id, graph) {
   this.constructor(id, "InputMorph (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
-
+  
   var switchIn = this.addInputPin('Switch', [0], VVVV.PinTypes.Value);
 
   // output pins
@@ -1181,10 +1210,10 @@ VVVV.Nodes.InputMorphValue = function(id, graph) {
 
   // invisible pins
   var inputcountIn = this.addInvisiblePin('Input Count', [2], VVVV.PinTypes.Value);
-
+  
   var inputPins = [];
-
-  this.configure = function() {
+  
+  this.initialize = function() {
     var inputCount = Math.max(2, inputcountIn.getValue(0));
     VVVV.Helpers.dynamicPins(this, inputPins, inputCount, function(i) {
       return this.addInputPin('Input '+(i+1), [0.0], VVVV.PinTypes.Value);
@@ -1192,8 +1221,11 @@ VVVV.Nodes.InputMorphValue = function(id, graph) {
   }
 
   this.evaluate = function() {
+    if (inputcountIn.pinIsChanged())
+      this.initialize();
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     var s;
     var inp1;
     var inp2;
@@ -1203,15 +1235,15 @@ VVVV.Nodes.InputMorphValue = function(id, graph) {
       inp1 = ((Math.floor(s) + inputPins.length) % inputPins.length + inputPins.length) % inputPins.length;
       inp2 = ((Math.ceil(s) + inputPins.length) % inputPins.length + inputPins.length) % inputPins.length;
       v = s - Math.floor(s);
-
+      
       outputOut.setValue(i, (1-v) * inputPins[inp1].getValue(i) + v * inputPins[inp2].getValue(i));
     }
-
+    
     outputOut.setSliceCount(maxSize);
   }
 
 }
-VVVV.Nodes.InputMorphValue.prototype = new Node();
+VVVV.Nodes.InputMorphValue.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -1224,16 +1256,16 @@ VVVV.Nodes.InputMorphValue.prototype = new Node();
 
 VVVV.Nodes.Sift = function(id, graph) {
   this.constructor(id, "Sift (Value)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = false;
-
+  
   // input pins
   var inputIn = this.addInputPin('Input', [0.0], VVVV.PinTypes.Value);
   var filterIn = this.addInputPin('Filter', [0.0], VVVV.PinTypes.Value);
@@ -1247,26 +1279,26 @@ VVVV.Nodes.Sift = function(id, graph) {
   var filterindexOut = this.addOutputPin('Filter Index', [0], VVVV.PinTypes.Value);
 
   this.evaluate = function() {
-
+    
     var maxSize = this.getMaxInputSliceCount();
-
+    
     var inputCount = inputIn.getSliceCount();
     var filterCount = filterIn.getSliceCount();
     hitsOut.setSliceCount(inputCount);
-
+    
     var epsilon = epsilonIn.getValue(0);
     var findMode = findModeIn.getValue(0);
-
+    
     var alreadySearched = {};
-
+    
     var hitIdx = 0;
-
+    
     for (var i=0; i<inputCount; i++) {
-
+      
       var inpSlice = i;
       if (findMode=='Last')
         inpSlice = inputCount - i - 1;
-
+      
       var input = inputIn.getValue(inpSlice);
       if (findMode != 'All') {
         if (alreadySearched[input]) {
@@ -1275,7 +1307,7 @@ VVVV.Nodes.Sift = function(id, graph) {
         }
         alreadySearched[input] = true;
       }
-
+      
       var hits = 0;
       for (var j=0; j<filterCount; j++) {
         filter = filterIn.getValue(j);
@@ -1291,144 +1323,10 @@ VVVV.Nodes.Sift = function(id, graph) {
     }
     inputindexOut.setSliceCount(hitIdx);
     filterindexOut.setSliceCount(hitIdx);
-
+    
   }
 
 }
-VVVV.Nodes.Sift.prototype = new Node();
+VVVV.Nodes.Sift.prototype = new VVVV.Core.Node();
 
-
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: Sqrt (Value)
- Author(s): David Gann
- Original Node Author(s): VVVV Group
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.SqrtValue = function(id, graph) {
-  this.constructor(id, "Sqrt (Value)", graph);
-
-  this.meta = {
-    authors: ['Matthias Zauner'],
-    original_authors: ['VVVV Group'],
-    credits: [],
-    compatibility_issues: []
-  };
-
-
-  var input1In = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
-
-
-  var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
-
-
-
-  this.evaluate = function() {
-    var maxSize = this.getMaxInputSliceCount();
-
-    for (var i=0; i<maxSize; i++) {
-      if (input1In.getValue(i)==0) {
-        outputOut.setValue(i, 1.0);
-        continue;
-      }
-      outputOut.setValue(i, Math.sqrt(input1In.getValue(i)));
-    }
-    outputOut.setSliceCount(maxSize);
-  }
-
-
-
-}
-VVVV.Nodes.SqrtValue.prototype = new Node();
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: OnOpen (VVVV)
- Author(s): David Gann
- Original Node Author(s): VVVV Group
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.OnOpenVVVV = function(id, graph) {
-  this.constructor(id, "OnOpen (VVVV)", graph);
-
-  this.meta = {
-    authors: ['David Gann'],
-    original_authors: ['VVVV Group'],
-    credits: [],
-    compatibility_issues: [ 'not working, needs probably framecounter solution']
-  };
-
-  var input1In = this.addInputPin("Simulate", [0.0], VVVV.PinTypes.Value);
-  var outputOut = this.addOutputPin("Output", [0.0], VVVV.PinTypes.Value);
-  var init = 1.0;
-  this.auto_evaluate = true;
-
-  this.evaluate = function() {
-    var maxSize = this.getMaxInputSliceCount();
-
-
-
-    for (var i=0; i<maxSize; i++) {
-      if (input1In.getValue(i)==1.0) {
-        init = 1.0;
-        continue;
-      }
-      outputOut.setValue(i, init);
-      init = 0.0;
-    }
-    outputOut.setSliceCount(maxSize);
-  }
-
-  }
-
-
-VVVV.Nodes.OnOpenVVVV.prototype = new Node();
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: Occurrence (VVVV)
- Author(s): David Gann
- Original Node Author(s): VVVV Group
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.Occurrence = function(id, graph) {
-  this.constructor(id, "Occurrence (Value)", graph);
-
-  this.meta = {
-    authors: ['David Gann'],
-    original_authors: ['VVVV Group'],
-    credits: [],
-    compatibility_issues: [ 'have only unique out pin']
-  };
-
-  var inputIn = this.addInputPin("Input", [0.0], VVVV.PinTypes.Value);
-  var UniqueOut = this.addOutputPin("Unique", [0.0], VVVV.PinTypes.Value);
-  var init = 1.0;
-  this.auto_evaluate = true;
-
-  function onlyUnique(value, index, self) {
-      return self.indexOf(value) === index;
-  }
-
-  this.evaluate = function() {
-    var maxSize = this.getMaxInputSliceCount();
-
-    var Input = inputIn.getValue(0, maxSize);
-    var unique = Input.filter( onlyUnique );
-    for (var i=0; i<unique.length; i++) {
-      UniqueOut.setValue(i, unique[i]);
-    }
-    UniqueOut.setSliceCount(unique.length);
-  }
-
-  }
-
-VVVV.Nodes.Occurrence.prototype = new Node();
-
-
-});
+}(vvvvjs_jquery));

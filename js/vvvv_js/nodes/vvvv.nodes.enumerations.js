@@ -3,11 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 
 /*
@@ -20,16 +16,16 @@ var VVVV = require('core/vvvv.core.defines');
 
 VVVV.Nodes.String2Enum = function(id, graph) {
   this.constructor(id, "String2Enum (Enumerations)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['Validation check does not work']
   };
-
+  
   var inputIn = this.addInputPin("String Value", [], VVVV.PinTypes.String);
-
+  
   var outputOut = this.addOutputPin("Enum", [], VVVV.PinTypes.Enum);
 
   this.evaluate = function() {
@@ -41,6 +37,6 @@ VVVV.Nodes.String2Enum = function(id, graph) {
   }
 
 }
-VVVV.Nodes.String2Enum.prototype = new Node();
+VVVV.Nodes.String2Enum.prototype = new VVVV.Core.Node();
 
-});
+}(vvvvjs_jquery));

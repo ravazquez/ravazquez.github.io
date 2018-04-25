@@ -3,11 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 
 /*
@@ -63,7 +59,7 @@ VVVV.Nodes.CurrentTimeAstronomy = function(id, graph) {
   }
 
 }
-VVVV.Nodes.CurrentTimeAstronomy.prototype = new Node();
+VVVV.Nodes.CurrentTimeAstronomy.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -138,7 +134,7 @@ VVVV.Nodes.GregorianAstronomySplit = function(id, graph) {
   }
 
 }
-VVVV.Nodes.GregorianAstronomySplit.prototype = new Node();
+VVVV.Nodes.GregorianAstronomySplit.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -194,6 +190,6 @@ VVVV.Nodes.GregorianAstronomyJoin = function(id, graph) {
   }
 
 }
-VVVV.Nodes.GregorianAstronomyJoin.prototype = new Node();
+VVVV.Nodes.GregorianAstronomyJoin.prototype = new VVVV.Core.Node();
 
-});
+}(vvvvjs_jquery));

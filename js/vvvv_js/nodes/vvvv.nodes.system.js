@@ -3,12 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
-var $ = require('jquery');
+(function($) {
 
 
 /*
@@ -32,8 +27,6 @@ VVVV.Nodes.MouseGlobal = function(id, graph) {
   this.auto_evaluate = true;
 
   var maxTouchPointsIn = this.addInputPin("Maximum Touch Points", [1], VVVV.PinTypes.Value);
-  var spaceIn = this.addInputPin("Space", ["Document [-1, +1]"], VVVV.PinTypes.Enum);
-  spaceIn.enumOptions = ["Document Pixels", "Document [-1, +1]"];
 
   var xOut = this.addOutputPin("X", [0], VVVV.PinTypes.Value);
   var yOut = this.addOutputPin("Y", [0], VVVV.PinTypes.Value);
@@ -51,8 +44,8 @@ VVVV.Nodes.MouseGlobal = function(id, graph) {
   var touchCount = 1;
 
   $(document).mousemove(function(e) {
-    x[0] = convertXToTargetSpace(e.pageX);
-    y[0] = convertYToTargetSpace(e.pageY);
+    x[0] = e.pageX*2/parseInt($('body').css('width')) - 1;
+    y[0] = -(e.pageY*2/parseInt($('body').css('height')) - 1);
   });
 
   $(document).bind('mousewheel', function(e) {
@@ -78,23 +71,11 @@ VVVV.Nodes.MouseGlobal = function(id, graph) {
     }
   });
 
-  function convertXToTargetSpace(x) {
-    if (spaceIn.getValue(0)=="Document Pixels")
-      return x;
-    return x * 2/parseInt($('body').css('width')) - 1;
-  }
-
-  function convertYToTargetSpace(y) {
-    if (spaceIn.getValue(0)=="Document Pixels")
-      return y;
-    return -(y * 2/parseInt($('body').css('width')) - 1);
-  }
-
   function setTouchPositions(e) {
     var i = e.originalEvent.changedTouches.length;
     while (i--) {
-      x[e.originalEvent.changedTouches[i].identifier] = convertXToTargetSpace(e.originalEvent.changedTouches[i].pageX);
-      y[e.originalEvent.changedTouches[i].identifier] = convertYToTargetSpace(e.originalEvent.changedTouches[i].pageY);
+      x[e.originalEvent.changedTouches[i].identifier] = e.originalEvent.changedTouches[i].pageX*2/parseInt($('body').css('width')) - 1;
+      y[e.originalEvent.changedTouches[i].identifier] = -(e.originalEvent.changedTouches[i].pageY*2/parseInt($('body').css('height')) - 1);
     }
   }
 
@@ -137,7 +118,7 @@ VVVV.Nodes.MouseGlobal = function(id, graph) {
   }
 
 }
-VVVV.Nodes.MouseGlobal.prototype = new Node();
+VVVV.Nodes.MouseGlobal.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -190,7 +171,7 @@ VVVV.Nodes.MouseWindow = function(id, graph) {
   }
 
 }
-VVVV.Nodes.MouseWindow.prototype = new Node();
+VVVV.Nodes.MouseWindow.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -232,7 +213,7 @@ VVVV.Nodes.ShellExecute = function(id, graph) {
   }
 
 }
-VVVV.Nodes.ShellExecute.prototype = new Node();
+VVVV.Nodes.ShellExecute.prototype = new VVVV.Core.Node();
 
 
 /*
@@ -290,56 +271,7 @@ VVVV.Nodes.ScreenInfo = function(id, graph) {
     }
   }
 }
-VVVV.Nodes.ScreenInfo.prototype = new Node();
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: Location (Browser)
- Author(s): Matthias Zauner
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.Location = function(id, graph) {
-  this.constructor(id, "Location (Browser)", graph);
-
-  this.meta = {
-    authors: ['Matthias Zauner'],
-    original_authors: [],
-    compatibility_issues: []
-  };
-
-  var hrefIn = this.addInputPin("HREF", ['#'], VVVV.PinTypes.String);
-  var doSetIn = this.addInputPin("Set", [0], VVVV.PinTypes.Value);
-
-  var protocolOut = this.addOutputPin("Protocol", [''], VVVV.PinTypes.String);
-  var hostnameOut = this.addOutputPin("Hostname", [''], VVVV.PinTypes.String);
-  var pathnameOut = this.addOutputPin("Path", [''], VVVV.PinTypes.String);
-  var portOut = this.addOutputPin("Port", [''], VVVV.PinTypes.String);
-  var hashOut = this.addOutputPin("Hash", [''], VVVV.PinTypes.String);
-
-  this.initialize = function() {
-    var thatNode = this;
-    window.addEventListener('hashchange', function() {
-      hashOut.setValue(0, location.hash);
-      thatNode.dirty = true;
-      if (thatNode.parentPatch.mainLoop)
-        thatNode.parentPatch.mainLoop.requestEvaluate();
-    })
-  }
-
-  this.evaluate = function() {
-    protocolOut.setValue(0, location.protocol);
-    hostnameOut.setValue(0, location.hostname);
-    pathnameOut.setValue(0, location.pathname);
-    portOut.setValue(0, location.port);
-    hashOut.setValue(0, location.hash);
-
-    if (doSetIn.getValue(0)>=0.5) {
-      location.href = hrefIn.getValue(0);
-    }
-  }
-}
-VVVV.Nodes.Location.prototype = new Node();
+VVVV.Nodes.ScreenInfo.prototype = new VVVV.Core.Node();
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -372,7 +304,11 @@ VVVV.Nodes.DefineNode = function(id, graph) {
 
   this.relatedNodes = [];
 
-  this.configure = function() {
+  this.initialize = function() {
+    this.evaluate();
+  }
+
+  this.evaluate = function() {
     if (nameIn.getValue(0)!='') {
       if (nameIn.pinIsChanged()) {
         var descriptor = nameIn.getValue(0);
@@ -394,18 +330,13 @@ VVVV.Nodes.DefineNode = function(id, graph) {
 
       if (sourceCodeIn.pinIsChanged() || nameIn.pinIsChanged()) {
         try {
-          if (VVVVContext.name=='browser')
-            f = new Function("id", "graph", 'var VVVV = require("core/vvvv.core"); this.constructor(id, "'+currentName+'", graph); '+sourceCodeIn.getValue(0));
-          else
-            f = new Function("id", "graph", 'var VVVV = window.server_req("./core/vvvv.core"); this.constructor(id, "'+currentName+'", graph); '+sourceCodeIn.getValue(0));
-          f.prototype = new Node();
+          f = new Function("id", "graph", 'this.constructor(id, "'+currentName+'", graph); '+sourceCodeIn.getValue(0));
+          f.prototype = new VVVV.Core.Node();
           f.definingNode = this;
           VVVV.NodeLibrary[currentName.toLowerCase()] = f;
           for (var i=0; i<this.relatedNodes.length; i++) {
             var n = this.relatedNodes[i];
-            var cmd = {syncmode: 'diff', nodes: {}, links: []};
-            cmd.nodes[n.id] = {create: true, nodename: currentName, x: n.x*15, y: n.y*15}
-            n.parentPatch.doLoad(cmd, function() { n.parentPatch.afterUpdate(); });
+            n.parentPatch.doLoad("<PATCH><NODE id='"+n.id+"' systemname='"+currentName+"' createme='pronto'><BOUNDS type='Node' left='"+(n.x*15)+"' top='"+(n.y*15)+"'></BOUNDS></NODE></PATCH>", function() { n.parentPatch.afterUpdate(); });
           }
           if (VVVV.NodeNames.indexOf(currentName)>=0)
             VVVV.NodeNames.splice(VVVV.NodeNames.indexOf(currentName), 1);
@@ -414,10 +345,7 @@ VVVV.Nodes.DefineNode = function(id, graph) {
           this.not_implemented = false;
         }
         catch (e) {
-          if (VVVVContext.name=="browser")
-            this.showStatus('error', e.message);
-          else
-            console.log("DefineNode parsing error:\n", e.message);
+          this.showStatus('error', e.message);
           this.not_implemented = true;
         }
 
@@ -425,16 +353,8 @@ VVVV.Nodes.DefineNode = function(id, graph) {
     }
   }
 
-  this.evaluate = function() {
-    // nix
-  }
-
   this.openUIWindow = function() {
-    w = window.open(location.protocol+'//'+location.host+(VVVVContext.Root[0]=='/' ? '' : location.pathname.replace(/\/[^\/]*$/, '')+'/')+VVVVContext.Root+"/code_editor.html", currentName+" / VVVV.js Effect Editor", "location=no, width=800, height=800, toolbar=no");
-    if (!w) {
-      alert('The code editor window seems to be blocked by your browser. Please check for any blocked-popup-messages in the main window and allow popups for this page.')
-      return;
-    }
+    w = window.open(location.protocol+'//'+location.host+(VVVV.Root[0]=='/' ? '' : location.pathname.replace(/\/[^\/]*$/, '')+'/')+VVVV.Root+"/code_editor.html", currentName+" / VVVV.js Effect Editor", "location=no, width=800, height=800, toolbar=no");
     var thatNode = this;
     window.setTimeout(function() {
       w.document.title = currentName+" / VVVV.js Node Editor";
@@ -443,18 +363,13 @@ VVVV.Nodes.DefineNode = function(id, graph) {
       $('#path', w.document).text(definingNodeName+' / '+nodeName);
       $('textarea', w.document).text(sourceCodeIn.getValue(0));
       $('#compile_button', w.document).click(function() {
-        if ($('textarea', w.document).val()==sourceCodeIn.values[0])
-          return;
         if (currentName=='') {
           thatNode.showStatus('error', 'Please provide a name for this node first');
           return;
         }
+        sourceCodeIn.setValue(0, $('textarea', w.document).val());
         thatNode.showStatus('notice', 'Compiling ...');
-        //sourceCodeIn.setValue(0, $('textarea', w.document).val()); // setValue implicitly calls configure
-        var cmd = {syncmode: 'diff', nodes: {}, links: []};
-        cmd.nodes[thatNode.id] = {pins: {}};
-        cmd.nodes[thatNode.id].pins['Source Code'] = {values: [$('textarea', w.document).val()]};
-        thatNode.parentPatch.editor.update(thatNode.parentPatch, cmd);
+        thatNode.evaluate();
       });
       w.focus();
     }, 500);
@@ -468,44 +383,6 @@ VVVV.Nodes.DefineNode = function(id, graph) {
   }
 
 }
-VVVV.Nodes.DefineNode.prototype = new Node();
+VVVV.Nodes.DefineNode.prototype = new VVVV.Core.Node();
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- NODE: FPS (Debug PerfMeter)
- Author(s): David Gann
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-VVVV.Nodes.FPS = function(id, graph) {
-  this.constructor(id, "FPS (Debug PerfMeter)", graph);
-
-  this.meta = {
-    authors: ['David Gann'],
-    original_authors: [],
-    compatibility_issues: []
-  };
-  this.auto_evaluate = true;
-
-
-  var fpsOut = this.addOutputPin("FPS", [0.0], VVVV.PinTypes.Value);
-  
-  var framecounter = 0;
-  var prevTime = 0;
-  
-  
-  this.evaluate = function() {
-
-
-   
-  var frameTime = Date.now();  
-  var fps = 1/ ((frameTime - prevTime) * 0.001);
-  prevTime = frameTime;
- 
-
-  fpsOut.setValue(0,fps);
-  }
-}
-VVVV.Nodes.FPS.prototype = new Node();
-
-});
+}(vvvvjs_jquery));

@@ -3,11 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,26 +15,26 @@ var VVVV = require('core/vvvv.core.defines');
 
 VVVV.Nodes.Integrate = function(id, graph) {
   this.constructor(id, "Integrate (Differential)", graph);
-
+  
   this.meta = {
     authors: ['woei'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: []
   };
-
+  
   this.auto_evaluate = true;
-
+  
   var posIn = this.addInputPin('Position In', [0.0], VVVV.PinTypes.Value);
   var resetIn = this.addInputPin("Reset", [0], VVVV.PinTypes.Value);
-
+  
   var posOut = this.addOutputPin("Position Out", [0.0], VVVV.PinTypes.Value);
   var velOut = this.addOutputPin("Velocity Out", [0.0], VVVV.PinTypes.Value);
-
+  
   var current = [];
 
   this.evaluate = function() {
-
+  
     dt = this.parentPatch.mainloop.deltaT/1000.0;
     var maxSize = this.getMaxInputSliceCount();
     for (var i=0; i<maxSize; i++) {
@@ -47,7 +43,7 @@ VVVV.Nodes.Integrate = function(id, graph) {
 
       var pos = posIn.getValue(i);
       current[i] += pos*dt;
-
+      
       var reset = resetIn.getValue(i);
       if (reset>=0.5) current[i] = 0.0;
 
@@ -59,6 +55,6 @@ VVVV.Nodes.Integrate = function(id, graph) {
     current.splice(maxSize);
   }
 }
-VVVV.Nodes.Integrate.prototype = new Node();
+VVVV.Nodes.Integrate.prototype = new VVVV.Core.Node();
 
-});
+}(vvvvjs_jquery));

@@ -3,11 +3,7 @@
 // VVVV.js is freely distributable under the MIT license.
 // Additional authors of sub components are mentioned at the specific code locations.
 
-if (typeof define !== 'function') { var define = require(VVVVContext.Root+'/node_modules/amdefine')(module, VVVVContext.getRelativeRequire(require)) }
-define(function(require,exports) {
-
-var Node = require('core/vvvv.core.node');
-var VVVV = require('core/vvvv.core.defines');
+(function($) {
 
 
 /*
@@ -20,16 +16,16 @@ var VVVV = require('core/vvvv.core.defines');
 
 VVVV.Nodes.XPathXML = function(id, graph) {
   this.constructor(id, "XPath (XML)", graph);
-
+  
   this.meta = {
     authors: ['Matthias Zauner'],
     original_authors: ['VVVV Group'],
     credits: [],
     compatibility_issues: ['XML Index Output Pin not implemented', 'Query Index Output Pin not implemented']
   };
-
+  
   this.auto_evaluate = false;
-
+  
   // input pins
   var xmlinputIn = this.addInputPin('XML Input', ['text'], VVVV.PinTypes.String);
   var xpathqueryIn = this.addInputPin('XPath Query', ['text'], VVVV.PinTypes.String);
@@ -39,7 +35,7 @@ VVVV.Nodes.XPathXML = function(id, graph) {
   var outputOut = this.addOutputPin('Output', ['text'], VVVV.PinTypes.String);
   var xmlindexOut = this.addOutputPin('XML Index', [0], VVVV.PinTypes.Value);
   var queryindexOut = this.addOutputPin('Query Index', [0], VVVV.PinTypes.Value);
-
+  
   var doc;
 
   this.evaluate = function() {
@@ -62,10 +58,10 @@ VVVV.Nodes.XPathXML = function(id, graph) {
         outputOut.setValue(i, "");
       i++;
     }
-
+    
     xmlindexOut.setValue(i, 0);
     queryindexOut.setValue(i, 0);
-
+    
     // you also might want to do stuff like this:
     outputOut.setSliceCount(i);
     xmlindexOut.setSliceCount(1);
@@ -73,6 +69,6 @@ VVVV.Nodes.XPathXML = function(id, graph) {
   }
 
 }
-VVVV.Nodes.XPathXML.prototype = new Node();
+VVVV.Nodes.XPathXML.prototype = new VVVV.Core.Node();
 
-});
+}(vvvvjs_jquery));
