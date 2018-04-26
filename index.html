@@ -65,18 +65,9 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-sm-2 justify-content-center">
-					<div class="btn-group btn-group-toggle" data-toggle="buttons">
-						<label class="btn btn-secondary">
-							<input type="radio" name="back" id="back_button" autocomplete="off" value="0"> Back
-						</label>
-						<label class="btn btn-secondary active">
-							<input type="radio" name="front" id="front_button" autocomplete="off" value="1"> Front
-						</label>
-					</div>
+					
 				</div>
 				<div class="col-sm-6">
-					<input type="text" id="front_text_input" class="form-control" placeholder="Front Text">
-					<input type="text" id="back_text_input" class="form-control hidden" placeholder="Back Text">
 				</div>
 			</div>
 			<div class="row margin-top">
@@ -86,6 +77,18 @@
 					<div id="overlay"></div>
 				</div>
 				<div id="sliders" class="col-sm-2">
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-secondary">
+							<input type="radio" name="back" id="back_button" autocomplete="off" value="0"> Back
+						</label>
+						<label class="btn btn-secondary active">
+							<input type="radio" name="front" id="front_button" autocomplete="off" value="1"> Front
+						</label>
+					</div>
+
+					<input type="text" id="front_text_input" class="form-control" placeholder="Front Text">
+					<input type="text" id="back_text_input" class="form-control hidden" placeholder="Back Text">
+					
 					<input type="range" class="form-control" id="hue_slider" min="0" max="1" step="0.01"/>
 					<input type="hidden" id="hue" value="0.5"/>
 					<label for="hue_slider">H</label>
