@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 	<head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-		<link rel="stylesheet" href="css/styles.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-3.3.1.min.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
 		<script language="JavaScript" src="js/vvvv_js/vvvv.js"></script>
 		<link href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Gaegu|Gugi" rel="stylesheet"> 
+		<link rel="stylesheet" href="css/styles.css" media="all">
 		<script language="JavaScript"> 
 			$(document).ready(function() 
 			{ 
+				var variant = "front";
+
 				VVVV.init("js/vvvv_js/", 'full', function() 
 				{ 
 					console.log('VVVV.js initialized'); 
@@ -38,11 +38,17 @@
 					if($(e.target).attr("name") != "back") {
 						$("#front_text_input").removeClass("hidden");
 						$("#back_text_input").addClass("hidden");
+						variant = "front";
 					}
 					else {
 						$("#back_text_input").removeClass("hidden");
 						$("#front_text_input").addClass("hidden");	
+						variant = "back";
 					}
+				});
+
+				$("li").click(function (e){
+					$("#selected_logo_" + variant).val($(e.target).parent().attr("value"));
 				});
 			}); 
 
@@ -86,6 +92,15 @@
 					<input type="range" class="form-control" id="value_slider" min="0" max="1" step="0.01"/>
 					<input type="hidden" id="value" value="0.5"/>
 					<label for="value_slider">V</label>
+
+					<ul class="list-group">
+						<li class="list-group-item" value="0"><img src="assets/images/logo_01.png"></li>
+						<li class="list-group-item" value="1"><img src="assets/images/logo_02.png"></li>
+						<li class="list-group-item" value="2"><img src="assets/images/logo_03.png"></li>
+						<li class="list-group-item" value="3"><img src="assets/images/none.png"></li>
+					</ul>
+					<input type="hidden" id="selected_logo_front" value="3"/>
+					<input type="hidden" id="selected_logo_back" value="3"/>
 				</div>
 			</div>
 		</div>

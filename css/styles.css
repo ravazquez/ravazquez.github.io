@@ -27,3 +27,9 @@ canvas{
 	height: 100%;
 	z-index:1;
 }
+.list-group-item{
+	border:0px;
+}
+.list-group-item img{
+	width:50%;
+}
