@@ -2,69 +2,50 @@
 <html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		 <meta charset="UTF-8"> 
-		<script language="JavaScript" src="js/vvvv_js/lib/jquery/jquery-3.3.1.min.js"></script>
+		<meta charset="UTF-8"> 
+		<script language="JavaScript" src="js/jquery-3.3.1.min.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-		<script language="JavaScript" src="js/vvvv_js/vvvv.js"></script>
-		<link href="https://fonts.googleapis.com/css?family=Black+Han+Sans|Gaegu|Gugi" rel="stylesheet"> 
 		<link rel="stylesheet" href="css/styles.css" media="all">
 		<script language="JavaScript"> 
 			$(document).ready(function() 
-			{ 
-				var variant = "front";
-
-				VVVV.init("js/vvvv_js/", 'full', function() 
-				{ 
-					console.log('VVVV.js initialized'); 
-				});
-
-				$("#hue_slider").on("input", function(){
-					$("#hue").val($("#hue_slider").val());
-			  	});
-
-			  	$("#hue_slider").on("input", function(){
-					$("#hue").val($("#hue_slider").val());
-			  	});
-
-			  	$("#saturation_slider").on("input", function(){
-					$("#saturation").val($("#saturation_slider").val());
-			  	});
-
-			  	$("#value_slider").on("input", function(){
-					$("#value").val($("#value_slider").val());
-			  	});
-
-				$('input:radio').change(function(e) {
-					if($(e.target).attr("name") != "back") {
-						$("#front_text_input").removeClass("hidden");
-						$("#back_text_input").addClass("hidden");
-						variant = "front";
-					}
-					else {
-						$("#back_text_input").removeClass("hidden");
-						$("#front_text_input").addClass("hidden");	
-						variant = "back";
-					}
-				});
+			{
+				text = $("#text_input").val();
 
 				$("li img").click(function (e){
-					$("#selected_logo_" + variant).val($(e.target).parent().attr("value"));
+					value = $(e.target).parent().attr("value");
+					refreshImage(text, value);
 				});
 
 				$("li img" ).on( "touchstart", function(e){
-					$("#selected_logo_" + variant).val($(e.target).parent().attr("value"));
+					var value = $(e.target).parent().attr("value");
+					refreshImage(text, value);
+				});
+
+				$("#text_input").change(function(e){
+					text = $(this).val();
+					value = $("#selected_logo").val();
+					refreshImage(text, value);
+				});
+
+				$('#content>img').on('load', function(){
+				  $('#loader').hide();
 				});
 			}); 
 
+			function refreshImage(text, value){
+				$("#loader").show();
+				text = text == "" ? " " : text;
+				$("#content>img").attr("src", "http://34.207.127.115/?width=512&height=512&text=" + text + "&wingOption=" + value);
+				$("#selected_logo").val(value);
+			}
+
 		</script>
-		<link rel="VVVV" href="assets/patches/first_test.v4p">
 	</head>
 	<body>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-sm-2 justify-content-center">
-					
 				</div>
 				<div class="col-sm-6">
 				</div>
@@ -72,42 +53,34 @@
 			<div class="row margin-top">
 				<div class="offset-sm-2 col-sm-6">
 					<div id="content">
+						<div id="loader">
+							<div id="loader-overlay">
+								Loading...
+								<div class="sk-cube-grid">
+								  <div class="sk-cube sk-cube1"></div>
+								  <div class="sk-cube sk-cube2"></div>
+								  <div class="sk-cube sk-cube3"></div>
+								  <div class="sk-cube sk-cube4"></div>
+								  <div class="sk-cube sk-cube5"></div>
+								  <div class="sk-cube sk-cube6"></div>
+								  <div class="sk-cube sk-cube7"></div>
+								  <div class="sk-cube sk-cube8"></div>
+								  <div class="sk-cube sk-cube9"></div>
+								</div>
+							</div>
+						</div>
+						<img src="http://34.207.127.115/?width=512&height=512&text=%20&wingOption=1"/>
 					</div>
 					<div id="overlay"></div>
 				</div>
 				<div id="sliders" class="col-sm-2">
-					<div class="btn-group btn-group-toggle" data-toggle="buttons">
-						<label class="btn btn-secondary">
-							<input type="radio" name="back" id="back_button" autocomplete="off" value="0"> Back
-						</label>
-						<label class="btn btn-secondary active">
-							<input type="radio" name="front" id="front_button" autocomplete="off" value="1"> Front
-						</label>
-					</div>
-
-					<input type="text" id="front_text_input" class="form-control" placeholder="Front Text">
-					<input type="text" id="back_text_input" class="form-control hidden" placeholder="Back Text">
-					
-					<input type="range" class="form-control" id="hue_slider" min="0" max="1" step="0.01"/>
-					<input type="hidden" id="hue" value="0.5"/>
-					<label for="hue_slider">H</label>
-
-					<input type="range" class="form-control" id="saturation_slider" min="0" max="1" step="0.01"/>
-					<input type="hidden" id="saturation" value="0.5"/>
-					<label for="saturation_slider">S</label>
-					
-					<input type="range" class="form-control" id="value_slider" min="0" max="1" step="0.01"/>
-					<input type="hidden" id="value" value="0.5"/>
-					<label for="value_slider">V</label>
+					<input type="text" id="text_input" class="form-control" placeholder="">
 
 					<ul class="list-group">
-						<li class="list-group-item" value="0"><img src="assets/images/logo_01.png"></li>
-						<li class="list-group-item" value="1"><img src="assets/images/logo_02.png"></li>
-						<li class="list-group-item" value="2"><img src="assets/images/logo_03.png"></li>
-						<li class="list-group-item" value="3"><img src="assets/images/none.png"></li>
+						<li class="list-group-item" value="1"><img src="assets/images/1-thumb.jpg"></li>
+						<li class="list-group-item" value="0"><img src="assets/images/0-thumb.jpg"></li>
 					</ul>
-					<input type="hidden" id="selected_logo_front" value="3"/>
-					<input type="hidden" id="selected_logo_back" value="3"/>
+					<input type="hidden" id="selected_logo" value="1"/>
 				</div>
 			</div>
 		</div>
