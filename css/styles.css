@@ -13,12 +13,12 @@
 	top: 36.5%;
 }
 #loader-overlay{
-	width: 20%;
 	background-color: rgba(180,180,180,0.76);
 	border-radius: 5px;
-	padding: 1em;
+	padding: 1em 1.5em;
 	margin-left: auto;
 	margin-right: auto;
+	display: inline-block;
 }
 #text_input{
 	text-transform: uppercase;
