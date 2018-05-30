@@ -89,6 +89,9 @@ input[type="text"]{
 	}
 	input[type="text"] {
 	    margin: .25em 0em;
+	    width:70%;
+	    margin-left:auto;
+	    margin-right:auto;
 	}
 	label{
 		margin:0;
