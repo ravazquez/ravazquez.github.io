@@ -67,7 +67,7 @@ input[type="text"]{
 
 @media screen and (max-width: 575px){
 	#content{
-		min-height: 0px;
+		min-height: 290px;
 	}
 	.list-group-item{
 		padding:0;
